@@ -199,7 +199,7 @@ function displayElement(index) {
 
 function displayGuess() {
   var guessChars = "";
-  var guessText = document.getElementById("guesses");
+  var guessText = document.getElementById("guess_bar");
 
   for (var i = 0; i < userGuess.length; i++) {
     if (correctGuess.indexOf(userGuess[i]) === -1) {
@@ -207,7 +207,9 @@ function displayGuess() {
     }
   }
 
-  guessText.innerHTML = guessChars;
+  if (guessChars.length > 0) {
+    guessText.innerHTML = "Guessed: " + guessChars;
+  }
 }
 
 function compareGuess(let) {
@@ -257,9 +259,19 @@ function captureKeyEvent(event) {
     }
 
     displayElement(elementIndexPicked);
-    displayGuess();
-    displayHistory();
+    // displayHistory();
+    updateProgressBar();
   }
 
+}
+
+function updateProgressBar() {
+
+  var guessBar = document.getElementById("guess_bar");
+  var guessPercent = ((userGuess.length - correctGuess.length) / maxAttempts) * 100;
+  var guessStringPercent = guessPercent + '%';
+  guessBar.style.width = guessStringPercent;
+
+  displayGuess();
 }
 

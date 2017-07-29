@@ -1,14 +1,57 @@
 <!DOCTYPE html>
 <html lang="en-us">
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Hangman Game</title>
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <body>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
 
-    <h1>The Hangman Game</h1>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <title>Hangman</title>
+
+</head>
+
+<body>
+
+  <header class="header-wrap">
+    <div class="container">
+      <div class="top-logo"><img src="assets/images/schrodinger-logo.png" class="header-img" id="schrodinger_logo" alt="Schrodinger Logo"></div>      
+      <div class="bottom-logo"><img src="assets/images/hangman-logo.png" class="header-img" id="hangman_logo" alt="Hangman Logo"></div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="animation-box">
+
+    </div>
+
+    <div class="progress progress-box">
+      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" id="guess_bar"></div>
+    </div>
+
+    <div class="guess-box">
+      <div class="element-box">
+        <div id="symbol"></div>
+        <div>Name Element</div>
+      </div>
+      <div class="element-string-box">
+        <span id="element"></span>
+      </div>
+    </div>
+
+  </div>
+
+<!--     <h1>The Hangman Game</h1>
     <p>This element has the symbol: 
       <span id="symbol"></span>
     </p>
@@ -28,9 +71,9 @@
     <p>
       Your Guesses so far: 
       <span id="guesses"></span> 
-    </p>
+    </p> -->
 
-    <script src="assets/javascript/game.js"></script>
+  <script src="assets/javascript/game.js"></script>
     
-  </body>
+</body>
 </html>
