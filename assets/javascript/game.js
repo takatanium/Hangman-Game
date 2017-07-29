@@ -112,6 +112,7 @@ var elements = [ ["H", 1, "hydrogen"],
                ];
 
 var maxAttempts = 5;
+var maxLosses = 5;
 
 //Reset at start of new game
 var wins;
@@ -129,6 +130,11 @@ var elementIndexPicked = -1;
 document.addEventListener('keyup', function(event) {
   if (elementIndexPicked === -1) { //initiate the first game
     initiateGame();
+  }
+  else if (stopGame) {
+    startNewElement();
+    updateProgressBar();
+    stopGame = false;
   }
   else { //in game play
     captureKeyEvent(event);
@@ -153,7 +159,7 @@ function startNewElement() {
 
   //generate and display element
   elementIndexPicked = generateElement();
-  displayElement(elementIndexPicked);
+  displayElement(elementIndexPicked, 0);
 }
 
 //Random generation of element index
@@ -169,29 +175,38 @@ function generateElement() {
   return elementIndex;
 }
 
-function displayElement(index) {
+function displayElement(index, status) {
   var elementText = document.getElementById("element");
 
   blankedText = "";
-
-  if (correctGuess.length === 0) {
-    for (var i = 0; i < elements[index][2].length; i++) {
-      blankedText += "_ ";
+  elementText.style.color = "black";
+  
+  if (status === 0) {
+    if (correctGuess.length === 0) {
+      for (var i = 0; i < elements[index][2].length; i++) {
+        blankedText += "_ ";
+      }
     }
-  }
 
-  else {
-    for (var i = 0; i < elements[index][2].length; i++) {
-      for (var j = 0; j < correctGuess.length; j++) {
-        if (elements[index][2][i] === correctGuess[j]) {
-          blankedText += correctGuess[j].toUpperCase() + " ";
-          break;
-        }
-        if (j == correctGuess.length - 1) {
-          blankedText += "_ ";
+    else {
+      for (var i = 0; i < elements[index][2].length; i++) {
+        for (var j = 0; j < correctGuess.length; j++) {
+          if (elements[index][2][i] === correctGuess[j]) {
+            blankedText += correctGuess[j].toUpperCase() + " ";
+            break;
+          }
+          if (j == correctGuess.length - 1) {
+            blankedText += "_ ";
+          }
         }
       }
     }
+  }
+  else {
+    for (var i = 0; i < elements[index][2].length; i++) {
+      blankedText += elements[index][2][i].toUpperCase() + " ";
+    }
+    elementText.style.color = "red"; 
   }
 
   elementText.innerHTML = blankedText;
@@ -246,14 +261,17 @@ function captureKeyEvent(event) {
         if (elementString.length === 0) { //check if won
           wins++;
           stopGame = true;
-          startNewElement();
         }
+        displayElement(elementIndexPicked, 0);
       }
       else {
         if ((userGuess.length - correctGuess.length) === maxAttempts) {
           losses++;
           stopGame = true;
-          startNewElement();
+          displayElement(elementIndexPicked, 1);
+        }
+        else {
+        displayElement(elementIndexPicked, 0);
         }
       }
     }
@@ -261,7 +279,6 @@ function captureKeyEvent(event) {
       console.log("Already typed");
     }
 
-    displayElement(elementIndexPicked);
     // displayHistory();
     updateProgressBar();
   }
@@ -278,3 +295,30 @@ function updateProgressBar() {
   displayGuess();
 }
 
+function showAnswer(index) {
+  var elementText = document.getElementById("element");
+
+  blankedText = "";
+
+  if (correctGuess.length === 0) {
+    for (var i = 0; i < elements[index][2].length; i++) {
+      blankedText += "_ ";
+    }
+  }
+
+  else {
+    for (var i = 0; i < elements[index][2].length; i++) {
+      for (var j = 0; j < correctGuess.length; j++) {
+        if (elements[index][2][i] === correctGuess[j]) {
+          blankedText += correctGuess[j].toUpperCase() + " ";
+          break;
+        }
+        if (j == correctGuess.length - 1) {
+          blankedText += "_ ";
+        }
+      }
+    }
+  }
+
+  elementText.innerHTML = blankedText;
+}
