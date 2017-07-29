@@ -210,6 +210,9 @@ function displayGuess() {
   if (guessChars.length > 0) {
     guessText.innerHTML = "Guessed: " + guessChars;
   }
+  else {
+    guessText.innerHTML = "";
+  }
 }
 
 function compareGuess(let) {
