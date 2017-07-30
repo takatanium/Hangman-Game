@@ -112,18 +112,21 @@ var elements = [ hydrogen = {symbol:"H", number: 1, name:"hydrogen", wiki:"https
                ];
 
 var maxAttempts = 3;
-var maxLosses = 5;
+var maxLosses = 4;
 var gameMode = [ [18, "Easy", "#5bc0de"], //easy mode
 						     [54, "Medium", "#f0ad4e"], //medium mode
 						     [109, "Hard", "#d9534f"], //hard mode
 						     [109, "Atomic", "#5cb85c"], //atomic mode
+						     [5, "Debug", "#000000"] //debug mode
                ];
 
 //Ending gifs
-var winAmination = "https://giphy.com/embed/c7kqZMtzMLpG8";
-var deathAnimation = "https://giphy.com/embed/ZWZMwJtoqAzxS";
-var luckAnimation = "https://giphy.com/embed/fliBUx4ZFB6HS";
-
+var winGif = "https://giphy.com/embed/c7kqZMtzMLpG8";
+var winComment = "Awesome!";
+var deathGif = "https://giphy.com/embed/ZWZMwJtoqAzxS";
+var deathComment = "Playing dead?";
+var luckGif = "https://giphy.com/embed/fliBUx4ZFB6HS";
+var luckComment = "Lucky kitty!";
 
 //Reset at start of new game
 var mode = 1; //default to easy mode
@@ -149,7 +152,7 @@ var toggleSymbol = true;
 //event listeners
 document.addEventListener('keyup', function(event) {
   if (elementPicked === "") { //initiate the first game
-  	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4") {
+  	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4" || event.key === "5") {
     	initiateGame(event.key-1);
     	console.log("Here");
   	}
@@ -293,11 +296,15 @@ function compareGuess(let) {
   return false;
 }
 
-function displayHistory() {
-  var winText = document.getElementById("wins");
-  var lossText = document.getElementById("losses");
-  winText.innerHTML = wins;
-  lossText.innerHTML = losses;
+//randomizer to determine death of cat
+function collapseWfn() {
+	var wfn = Math.floor(Math.random() * 10);
+
+	if (wfn < 4) {
+		return "uncertain";
+	}
+
+	return "lost";
 }
 
 //Main gameplay interaction, keyboard events
@@ -318,6 +325,11 @@ function captureKeyEvent(event) {
           displayInstructions("getNew");
           shiftElements(true);
           updateLossBar();
+
+          //check if anymore elements
+    			if (elementSubSet.length === 0) {
+    				openCover("win");
+    			}
         }
         displayElement(0);
       }
@@ -330,6 +342,14 @@ function captureKeyEvent(event) {
           updateLossBar();
           displayElement(1);
           shiftElements(false);
+
+          //check if reached max losses
+          if (losses === maxLosses) {
+          	openCover(collapseWfn());
+          }
+    			else if (elementSubSet.length === 0) {
+    				openCover("win");
+    			}
         }
         else {
         displayElement(0);
@@ -364,19 +384,29 @@ function updateLossBar() {
 function printElements() {
 	var listElements = document.getElementById("element_past");
 	listElements.innerHTML = "";
+
+	var symOrNum;
+
 	for (var i = 0; i < elementPastSet.length; i++) {
+		if (toggleSymbol) {
+			symOrNum = elementPastSet[i][0].symbol;
+		}
+		else {
+			symOrNum = elementPastSet[i][0].number;
+		}
+
 		if (elementPastSet[i][1] === false) { //guessed incorrectly
 			listElements.innerHTML += "<a href=" 
 		                         + elementPastSet[i][0].wiki 
 		                         + " target='_blank' class='list-group-item list-group-item-danger'>"
-		                         + elementPastSet[i][0].symbol + ":" 
+		                         + symOrNum + ":" 
 		                         + capFirst(elementPastSet[i][0].name) + "</a>";
 		}
 		else {
 			listElements.innerHTML += "<a href=" 
 		                         + elementPastSet[i][0].wiki 
 		                         + " target='_blank' class='list-group-item'>"
-		                         + elementPastSet[i][0].symbol + ":" 
+		                         + symOrNum + ":" 
 		                         + capFirst(elementPastSet[i][0].name) + "</a>";
 		}
 	}
@@ -403,16 +433,43 @@ function shiftElements(correctGuess) {
 //This is done at start of game or if cat survives
 function closeCover() {
 	document.getElementById("difficulty_box").style.visibility = "hidden";
+	
 	var cover = document.getElementById("cover_box");
-
+	cover.classList.remove('open-animate');
 	cover.classList.add('cover-animate');
 }
 
 //This is done if radioactive meter reaches 100%
 function openCover(status) {
 	//remove schrodinger background
+	var animationBox = document.getElementById("animation_box");
+	animationBox.style.backgroundImage = "none";
 
-	//
+	//depending on win or loss display different text and gifs
+	var gifImage = document.getElementById("game_done");
+	var resultText = document.getElementById("result_text");
+	if (status === "lost") {
+		gifImage.src = deathGif;
+		resultText.innerHTML = deathComment;
+	}
+	else if (status === "uncertain") {
+		gifImage.src = luckGif;
+		resultText.innerHTML = luckComment;
+	}
+	else { //this is a overall win
+		gifImage.src = winGif;
+		resultText.innerHTML = winComment;
+	}
+
+	//animate opening of cover
+	document.getElementById("difficulty_box").style.visibility = "hidden";
+	var cover = document.getElementById("cover_box");
+	cover.classList.remove('close-animate');
+	cover.classList.add('open-animate');
+
+	//display background-content box
+	var backgroundContent = document.getElementById("background_content");
+	backgroundContent.style.visibility = "visible";
 }
 
 function displayInstructions(instr) {
@@ -438,4 +495,35 @@ function playSound(status) {
 
 function resetGame() {
 
+	//hide background content
+	var backgroundContent = document.getElementById("background_content");
+	backgroundContent.style.visibility = "hidden";
+
+	//replace schrodinger background
+	var animationBox = document.getElementById("animation_box");
+		animationBox.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
+
+	//show difficulty box
+	var difficultyBox = document.getElementById("difficulty_box");
+	difficultyBox.style.visibility = "visible";
+
+	//remove elements in list
+	elementPastSet = [];
+	printElements();
+
+	//remove guess element
+	var elemText = document.getElementById("element");
+	elemText.innerHTML = "";
+
+	//remove symbol
+	var symText = document.getElementById("symbol");
+	symText.innerHTML = "";
+
+	//reset loss gauges
+	losses = 0;
+	wins = 0;
+	userGuess = [];
+	correctGuess = [];
+	updateLossBar();
+	updateProgressBar();
 }

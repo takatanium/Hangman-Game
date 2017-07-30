@@ -168,16 +168,23 @@ body>.container {
   position: relative;
   max-width: 400px; 
   visibility: hidden;
-  overflow:hidden;
+  overflow: hidden;
   position: relative;
 }
 
 .cover-animate {
+  height: 232px;
   visibility: visible;
-  overflow:hidden;
   animation: close-cover 2s;
   -webkit-animation: close-cover 2s;
   -moz-animation: close-cover 2s;
+}
+
+.open-animate {
+  height: 0;
+  animation: open-cover 2s;
+  -webkit-animation: open-cover 2s;
+  -moz-animation: open-cover 2s;
 }
 
 .cover-img {
@@ -217,6 +224,7 @@ body>.container {
 .background-content {
   position: absolute;
   top: 0;
+  visibility: hidden;
 }
 
 .game-over-text {
@@ -227,15 +235,18 @@ body>.container {
   height: 236px;
 }
 
-.result-text {
+#result_text {
   text-align: center;
   padding-top: 5px;
   font-weight: bold;
+  font-size: 30px;
+  color: #7FFF00;
+  text-shadow: 2px 2px 2px #000000;
 }
 
 .again-text {
   position: relative;
-  top: 150px;
+  top: 140px;
   text-align: center;
   font-size: 18px;
   font-weight: bold;
@@ -245,10 +256,17 @@ body>.container {
 @keyframes close-cover {
   from {
     height: 0px;
-    /*transform: translateY(100%);*/
   }
   to {
     height: 232px;
-    /*transform: translateY(0);*/
+  }
+}
+
+@keyframes open-cover {
+  from {
+    height:232px;
+  }
+  to {
+    height: 0px;
   }
 }

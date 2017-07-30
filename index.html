@@ -36,13 +36,13 @@
 
     <div class="main-box">
 
-      <div class="animation-box">
-      
-        <div class="background-content">
+      <div class="animation-box" id="animation_box">
+
+        <div class="background-content" id="background_content">
           <iframe src="https://giphy.com/embed/fliBUx4ZFB6HS" width="400px" height="232px" frameBorder="0" id="game_done" class="giphy-embed"></iframe>
           <div class="game-over-text">
-            <p class="result-text">Lucky Kitty</p>
-            <button type="button" class="btn btn-warning again-text" onclick="resetGame();">Play Again?</button>
+            <p id="result_text"></p>
+            <button type="button" class="btn btn-warning again-text" id="reset_game" onclick="resetGame();">Play Again?</button>
           </div>
         </div>
 
