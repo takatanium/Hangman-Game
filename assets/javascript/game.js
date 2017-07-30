@@ -368,6 +368,9 @@ function shiftElements(correctGuess) {
 //This is done at start of game or if cat survives
 function closeCover() {
 	document.getElementById("difficulty_box").style.visibility = "hidden";
+	var cover = document.getElementById("cover_img");
+
+	cover.classList.add('cover-animate');
 }
 
 //This is done if radioactive meter reaches 100%

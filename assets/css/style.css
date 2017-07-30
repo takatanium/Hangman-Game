@@ -17,7 +17,7 @@ body {
   font-family: 'Share Tech Mono', monospace;
   color: black;
   text-align: center;
-  padding-top: 25px;
+  padding-top: 40px;
 }
 
 h2 {
@@ -42,7 +42,7 @@ p {
 
 .container {
   /*width: 65%;*/
-  width: 600px;
+  width: 630px;
   margin: 0 auto;
 }
 
@@ -70,14 +70,14 @@ body>.container {
 }
 
 .main-box {
-  display: flex;
-  flex-direction: row;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .animation-box {
-  width: 420px;
-  height: 264px;
+  width: 404px;
+  height: 236px;
   background: white;
   border: solid #cccccc 2px; 
   margin-right: 10px;
@@ -95,8 +95,8 @@ body>.container {
 .element-list-box {
   background: white;
   border: solid #cccccc 2px; 
-  height: 265px;
-  width: 170px;
+  height: 236px;
+  width: 186px;
 }
 
 .progress-box {
@@ -144,10 +144,25 @@ body>.container {
 }
 
 .cover-img {
-  min-width: 400px; 
-  min-height: 255px;
-  margin-top: 3px;
-  z-index: -1;
+  max-width: 400px; 
+  /*min-height: 255px;*/
+  visibility: hidden;
+  overflow:hidden;
+  position: relative;
+/*  top: 0;
+  left: 0;*/
+}
+
+.cover-animate {
+  visibility: visible;
+  overflow:hidden;
+  animation: close-cover 2s;
+}
+
+.sticker {
+  position: relative;
+  top: 50px;
+  bottom: 50px;
 }
 
 .guess-progress-box {
@@ -167,11 +182,18 @@ body>.container {
   margin-left: 10px;
 }
 
-.list-wrap {
-  overflow-y: scroll;
-}
-
 .dynamic-box {
   overflow-y: scroll;
-  height: 231px;
+  height: 202px;
+}
+
+@keyframes close-cover {
+  from {
+    /*transform: translate3d(-100%, 0, 0);*/
+    height: 0px;
+  }
+  to {
+    height: 232px;
+    /*transform: translate3d(0, 0, 0);*/
+  }
 }
