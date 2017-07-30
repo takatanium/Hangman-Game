@@ -1,5 +1,6 @@
 * {
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
+  border-radius: 0 !important;
 }
 
 html {
@@ -16,11 +17,32 @@ body {
   font-family: 'Share Tech Mono', monospace;
   color: black;
   text-align: center;
+  padding-top: 25px;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 4px 0px 0px 0px;
+  padding: 0px 2px 0px 2px;
+  border-bottom: solid #cccccc 2px;
+  padding-bottom: 4px;
+}
+
+p {
+  font-size: 20px;
+  text-align: left;
+  margin: 0px;
+}
+
+.list-group-item {
+  padding: 3px 2px 3px 2px;
+  text-align: left;
+  font-size: 14px
 }
 
 .container {
-  width: 65%;
-  max-width: 600px;
+  /*width: 65%;*/
+  width: 600px;
   margin: 0 auto;
 }
 
@@ -47,13 +69,34 @@ body>.container {
   margin: 20px auto;
 }
 
+.main-box {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
 .animation-box {
-  width: 100%;
-  /*height: 340px;*/
-  flex: 1;
+  width: 420px;
+  height: 264px;
   background: white;
   border: solid #cccccc 2px; 
-  margin-bottom: 10px;
+  margin-right: 10px;
+  position: relative;
+  background-image: url("../images/schrodingers-cat.png");
+  background-size: 420px 264px;
+}
+
+.difficulty-box {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+}
+
+.element-list-box {
+  background: white;
+  border: solid #cccccc 2px; 
+  height: 265px;
+  width: 170px;
 }
 
 .progress-box {
@@ -76,7 +119,6 @@ body>.container {
 }
 
 .element-box {
-  /*width: 100px;*/
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -101,18 +143,35 @@ body>.container {
   font-family: 'Share Tech Mono', monospace;
 }
 
-.cat-img {
-  width: 100%;
+.cover-img {
+  min-width: 400px; 
+  min-height: 255px;
+  margin-top: 3px;
+  z-index: -1;
 }
 
 .guess-progress-box {
   display: flex;
   flex-direction: row;
-  /*height: 20px;*/
+}
+
+.loss-progress-box {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
 }
 
 #radioactive_img {
   max-height: 20px;
   max-width: 20px;
   margin-left: 10px;
+}
+
+.list-wrap {
+  overflow-y: scroll;
+}
+
+.dynamic-box {
+  overflow-y: scroll;
+  height: 231px;
 }

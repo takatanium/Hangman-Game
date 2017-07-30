@@ -5,13 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
-
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
 
   <link href="assets/css/style.css" rel="stylesheet">
@@ -31,15 +27,38 @@
 
   <div class="container">
 
-    <div class="animation-box">
-    	<img src="assets/images/schrodingers-cat.png" class="cat-img" id="schrodingers-cat" alt="Schrodingers Cat">
+		<div class="loss-progress-box">
+	    <div class="progress progress-box">
+	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" id="loss_bar"></div>
+	    </div>
+	    <img src="assets/images/radioactive.png" id="radioactive_img" alt="Radioactive Logo">
+    </div>
+
+    <div class="main-box">
+      <div class="animation-box">
+        <div class="difficulty-box" id="difficulty_box">
+          <p>Choose Difficulty</p>
+          <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
+          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Hard</button>
+          <button type="button" class="btn btn-success" onclick="initiateGame(2);">Radioactive</button>
+        </div>
+        <!-- <img src="assets/images/schrodingers-cat.png" class="cat-img" id="schrodingers-cat" alt="Schrodingers Cat"> -->
+        <div id="metal_cover">
+      	 <img src="assets/images/cover.jpg" class="cover-img slideInDown" id="cover_img" alt="Metal Cover"> 
+        </div>
+      </div>
+      <div class="element-list-box" title="Click on Element for more information!">
+        <h2> Element List</h2>
+        <div class="dynamic-box">
+          <div class="list-group" id="element_past"></div>
+        </div>
+      </div>
     </div>
 		
 		<div class="guess-progress-box">
 	    <div class="progress progress-box">
-	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" id="guess_bar"></div>
+	      <div class="progress-bar progress-bar-warning progress-bar-striped progress-bar-animated" id="guess_bar"></div>
 	    </div>
-	    <img src="assets/images/radioactive.png" id="radioactive_img" alt="Radioactive Logo">
     </div>
 
     <div class="guess-box">
