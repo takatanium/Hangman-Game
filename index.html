@@ -35,16 +35,36 @@
     </div>
 
     <div class="main-box">
+
       <div class="animation-box">
+      
+        <div class="background-content">
+          <iframe src="https://giphy.com/embed/fliBUx4ZFB6HS" width="400px" height="232px" frameBorder="0" id="game_done" class="giphy-embed"></iframe>
+          <div class="game-over-text">
+            <p class="result-text">Lucky Kitty</p>
+            <button type="button" class="btn btn-warning again-text" onclick="resetGame();">Play Again?</button>
+          </div>
+        </div>
+
         <div class="difficulty-box" id="difficulty_box">
           <p>Choose Difficulty</p>
           <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
-          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Hard</button>
-          <button type="button" class="btn btn-success" onclick="initiateGame(2);">Radioactive</button>
+          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Medium</button>
+          <button type="button" class="btn btn-danger" onclick="initiateGame(2);">Hard</button>
+          <button type="button" class="btn btn-success" onclick="initiateGame(3);">Atomic</button>
         </div>
-        <img src="assets/images/cover-sticker.jpg" class="cover-img" id="cover_img" alt="Metal Cover"> 
-    	 
+
+        <div class="cover-box" id="cover_box">
+          <img src="assets/images/cover-sticker.jpg" class="cover-img" alt="Metal Cover"> 
+          <div class="mode-box" id="mode_box">
+            <p class="mode-indication">Mode: <span id="which_mode"></span></p>
+            <p class="remaining-indication">Remaining: <span id="remaining_elements"></span></p>
+          </div>
+          <div id="instructions"></div>
+        </div>
+      
       </div>
+
       <div class="element-list-box" title="Click on Element for more information!">
         <h2> Element List</h2>
         <div class="dynamic-box">
@@ -66,6 +86,8 @@
       </div>
       <div class="element-string-box">
         <span id="element"></span>
+        <audio id="bell_sound" src="assets/audio/bell.mp3" autostart="false"></audio>
+        <audio id="clonk_sound" src="assets/audio/clonk.mp3" autostart="false"></audio>
       </div>
     </div>
 

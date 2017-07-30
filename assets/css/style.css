@@ -10,7 +10,6 @@ html {
 
 body {
   background-image: url("../images/metal.png");
-  /*background-size: cover;*/
   display: flex;
   flex-direction: column;
   font-size: 14px;
@@ -143,28 +142,6 @@ body>.container {
   font-family: 'Share Tech Mono', monospace;
 }
 
-.cover-img {
-  max-width: 400px; 
-  /*min-height: 255px;*/
-  visibility: hidden;
-  overflow:hidden;
-  position: relative;
-/*  top: 0;
-  left: 0;*/
-}
-
-.cover-animate {
-  visibility: visible;
-  overflow:hidden;
-  animation: close-cover 2s;
-}
-
-.sticker {
-  position: relative;
-  top: 50px;
-  bottom: 50px;
-}
-
 .guess-progress-box {
   display: flex;
   flex-direction: row;
@@ -187,13 +164,91 @@ body>.container {
   height: 202px;
 }
 
+.cover-box {
+  position: relative;
+  max-width: 400px; 
+  visibility: hidden;
+  overflow:hidden;
+  position: relative;
+}
+
+.cover-animate {
+  visibility: visible;
+  overflow:hidden;
+  animation: close-cover 2s;
+  -webkit-animation: close-cover 2s;
+  -moz-animation: close-cover 2s;
+}
+
+.cover-img {
+  width: 400px;
+  height: 232px;
+}
+
+.mode-box {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 404px;
+  height: 236px;
+  text-shadow: 0px 0px 1px #fff;
+}
+
+.mode-indication {
+  text-align: center;
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.remaining-indication {
+  text-align: center;
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+#instructions {
+  position: relative;
+  bottom: 60px;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px #fff;
+}
+
+.background-content {
+  position: absolute;
+  top: 0;
+}
+
+.game-over-text {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 404px;
+  height: 236px;
+}
+
+.result-text {
+  text-align: center;
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+.again-text {
+  position: relative;
+  top: 150px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px #fff;
+}
+
 @keyframes close-cover {
   from {
-    /*transform: translate3d(-100%, 0, 0);*/
     height: 0px;
+    /*transform: translateY(100%);*/
   }
   to {
     height: 232px;
-    /*transform: translate3d(0, 0, 0);*/
+    /*transform: translateY(0);*/
   }
 }

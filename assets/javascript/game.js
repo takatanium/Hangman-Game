@@ -111,12 +111,19 @@ var elements = [ hydrogen = {symbol:"H", number: 1, name:"hydrogen", wiki:"https
                  meitnerium = {symbol:"Mt", number:109, name:"meitnerium", wiki:"https://en.wikipedia.org/wiki/meitnerium"}
                ];
 
-var maxAttempts = 4;
+var maxAttempts = 3;
 var maxLosses = 5;
-var gameMode = [ 18, //easy mode
-						     54, //hard mode
-						     109 //radioactive mode
+var gameMode = [ [18, "Easy", "#5bc0de"], //easy mode
+						     [54, "Medium", "#f0ad4e"], //medium mode
+						     [109, "Hard", "#d9534f"], //hard mode
+						     [109, "Atomic", "#5cb85c"], //atomic mode
                ];
+
+//Ending gifs
+var winAmination = "https://giphy.com/embed/c7kqZMtzMLpG8";
+var deathAnimation = "https://giphy.com/embed/ZWZMwJtoqAzxS";
+var luckAnimation = "https://giphy.com/embed/fliBUx4ZFB6HS";
+
 
 //Reset at start of new game
 var mode = 1; //default to easy mode
@@ -142,14 +149,16 @@ var toggleSymbol = true;
 //event listeners
 document.addEventListener('keyup', function(event) {
   if (elementPicked === "") { //initiate the first game
-  	if (event.key === "1" || event.key === "2" || event.key === "3") {
+  	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4") {
     	initiateGame(event.key-1);
+    	console.log("Here");
   	}
     //close box
   }
   else if (stopGame) {
     startNewElement();
     updateProgressBar();
+    displayInstructions("none");
     stopGame = false;
   }
   else { //in game play
@@ -166,10 +175,24 @@ function initiateGame(mode) {
   elementSubSet = [];
   elementPastSet = [];
 
+  if (mode === 3) { //atomic mode uses atomic numbers
+  	toggleSymbol = false;
+  }
+  else {
+  	toggleSymbol = true;
+  }
+
+  var whichModeText = document.getElementById("which_mode");
+  var remainingText = document.getElementById("remaining_elements");
+
   //push subset of elementList into elements
-  for (var j = 0; j < gameMode[mode]; j++) {
+  for (var j = 0; j < gameMode[mode][0]; j++) {
   	elementSubSet.push(elements[j]);
   }
+
+  whichModeText.innerHTML = gameMode[mode][1];
+  whichModeText.style.color = gameMode[mode][2];
+  remainingText.innerHTML = gameMode[mode][0];
 
   closeCover();
   startNewElement();
@@ -196,7 +219,12 @@ function generateElement() {
 
   //Display atomic symbol to screen
   var symbolText = document.getElementById("symbol");
-  symbolText.innerHTML = elementPicked.symbol;
+  if (toggleSymbol) {
+  	symbolText.innerHTML = elementPicked.symbol;
+	}
+	else {
+  	symbolText.innerHTML = elementPicked.number;
+	}
 
   return elementIndex;
 }
@@ -249,7 +277,6 @@ function displayGuess() {
   }
 
   if (guessChars.length > 0) {
-    // guessText.style.fontStyle = "black";
     guessText.innerHTML = guessChars;
   }
   else {
@@ -287,7 +314,10 @@ function captureKeyEvent(event) {
         if (elementString.length === 0) { //check if won
           wins++;
           stopGame = true;
+          playSound("correct");
+          displayInstructions("getNew");
           shiftElements(true);
+          updateLossBar();
         }
         displayElement(0);
       }
@@ -295,6 +325,8 @@ function captureKeyEvent(event) {
         if ((userGuess.length - correctGuess.length) === maxAttempts) {
           losses++;
           stopGame = true;
+          playSound("wrong");
+          displayInstructions("getNew");
           updateLossBar();
           displayElement(1);
           shiftElements(false);
@@ -348,6 +380,10 @@ function printElements() {
 		                         + capFirst(elementPastSet[i][0].name) + "</a>";
 		}
 	}
+
+	//decrease remaining element
+  var remainingText = document.getElementById("remaining_elements");
+	remainingText.innerHTML = elementSubSet.length;
 }
 
 function capFirst(string) {
@@ -361,19 +397,45 @@ function shiftElements(correctGuess) {
 	//remove element from sub set
 	elementSubSet.splice(elementIndex, 1);
 
-	// console.log(elementSubSet);
 	printElements(); //print elements to screen
 }
 
 //This is done at start of game or if cat survives
 function closeCover() {
 	document.getElementById("difficulty_box").style.visibility = "hidden";
-	var cover = document.getElementById("cover_img");
+	var cover = document.getElementById("cover_box");
 
 	cover.classList.add('cover-animate');
 }
 
 //This is done if radioactive meter reaches 100%
-function openCover() {
+function openCover(status) {
+	//remove schrodinger background
+
+	//
+}
+
+function displayInstructions(instr) {
+	var instructText = document.getElementById("instructions");
+	if (instr === "getNew") {
+		instructText.innerHTML = "Press any key for next element.";
+	}
+	else {
+		instructText.innerHTML = "";
+	}
+}
+
+function playSound(status) {
+	if (status === "correct") {
+		var sound = document.getElementById("bell_sound");
+    sound.play();
+	}
+	else {
+		var sound = document.getElementById("clonk_sound");
+    sound.play();
+	}
+}
+
+function resetGame() {
 
 }
