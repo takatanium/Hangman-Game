@@ -125,9 +125,9 @@ p {
 .cover-animate {
   height: 232px;
   visibility: visible;
-  animation: close-cover 4s;
-  -webkit-animation: close-cover 4s;
-  -moz-animation: close-cover 4s;
+  animation: close-cover 1s;
+  -webkit-animation: close-cover 1s;
+  -moz-animation: close-cover 1s;
 }
 
 .open-animate {
