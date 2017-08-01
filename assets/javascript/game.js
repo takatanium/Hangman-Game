@@ -58,7 +58,6 @@ document.addEventListener('keyup', function(event) {
     updateLettGauge();
     displayInstructions("");
     stopGame = false;
-    makeKeys();
   }
   //in game play
   else if (!stopGame && event.keyCode >= 65 && event.keyCode <= 90) {
@@ -151,7 +150,6 @@ function makeKeys() {
 
 //Game initiation, reset variables and pick an element
 function initiateGame(mode) {
-  makeKeys();
 
   //reset all variables
   wins = 0;
@@ -196,6 +194,7 @@ function genElement() {
   correctGuess = [];
   elementString = "";
   stopGame = false;
+  makeKeys();
 
   //random generation of element in sub set
   elementIndex = Math.floor(Math.random() * elementSubSet.length);
@@ -469,4 +468,5 @@ function resetGame(val) {
   gameOver = false;
   updateLossGauge();
   updateLettGauge();
+  makeKeys();
 }
