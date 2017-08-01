@@ -58,23 +58,26 @@ document.addEventListener('keyup', function(event) {
     updateLettGauge();
     displayInstructions("");
     stopGame = false;
+    makeKeys();
   }
   //in game play
   else if (!stopGame && event.keyCode >= 65 && event.keyCode <= 90) {
-    captureKeyEvent(event);
+    captureKeyEvent(event.keyCode);
   }
 });
 
 //Main gameplay interaction, keyboard events
-function captureKeyEvent(event) {
+function captureKeyEvent(keyCodeNumber) {
 
-  var letterIndex = event.keyCode - 65; //define the index of the keycode
+  // var letterIndex = event.keyCode - 65; //define the index of the keycode
+  var letterIndex = keyCodeNumber - 65; //define the index of the keycode
   var keyChar = letters.charAt(letterIndex);
 
   displayInstructions("");
 
   if (userGuess.indexOf(keyChar) === -1) { //ensure only unique guesses
     userGuess.push(keyChar); //add letter to user guess array
+    makeKeys();
 
     if (compareGuess(keyChar)) { //compare to chosen element string
       displayElement(0);
@@ -83,7 +86,7 @@ function captureKeyEvent(event) {
         wins++;
         stopGame = true;
         bellSound.play();
-        displayInstructions("Press Enter");
+        displayInstructions("Press Enter or Click on Element");
         shiftElements(true);
 
         //check if anymore elements
@@ -98,7 +101,7 @@ function captureKeyEvent(event) {
         losses++;
         stopGame = true;
         clonkSound.play();
-        displayInstructions("Press Enter");
+        displayInstructions("Press Enter or Click on Element");
         updateLossGauge();
         displayElement(1);
         shiftElements(false);
@@ -127,8 +130,29 @@ function captureKeyEvent(event) {
   updateLettGauge();
 }
 
+function makeKeys() {
+  var lettPick = document.getElementById("lett_pick");
+  lettPick.innerHTML = "";
+  var keyCodeNum;
+
+  for (var i = 0; i < letters.length; i++) {
+    //for each letter make a div
+    keyCodeNum = i + 65;
+    lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")'>" + letters[i].toUpperCase() + "</div>";
+    for (var j = 0; j < userGuess.length; j++) {
+      if (letters[i] === userGuess[j]) {
+        var lettPickX = document.getElementById("lett" + i);
+        lettPickX.style.color = "lightgrey";
+        console.log(userGuess);
+      }
+    }
+  }
+}
+
 //Game initiation, reset variables and pick an element
 function initiateGame(mode) {
+  makeKeys();
+
   //reset all variables
   wins = 0;
   losses = 0;
@@ -191,6 +215,16 @@ function genElement() {
   return elementIndex;
 }
 
+function clickElemGen() {
+  if (stopGame && !gameOver) {
+    genElement();
+    updateLettGauge();
+    displayInstructions("");
+    stopGame = false;
+    makeKeys();
+  }
+}
+
 function displayElement(status) {
   var elemGuessText = document.getElementById("elem_guess_text");
 
@@ -236,18 +270,18 @@ function updateLettGauge() {
 
   lettGauge.style.width = guessStringPercent;
 
-  for (var i = 0; i < userGuess.length; i++) {
-    if (correctGuess.indexOf(userGuess[i]) === -1) {
-      guessChars += userGuess[i].toUpperCase() + " ";
-    }
-  }
+  // for (var i = 0; i < userGuess.length; i++) {
+  //   if (correctGuess.indexOf(userGuess[i]) === -1) {
+  //     guessChars += userGuess[i].toUpperCase() + " ";
+  //   }
+  // }
 
-  if (guessChars.length > 0) {
-    lettGauge.innerHTML = guessChars;
-  }
-  else {
-    lettGauge.innerHTML = "";
-  }
+  // if (guessChars.length > 0) {
+  //   lettGauge.innerHTML = guessChars;
+  // }
+  // else {
+  //   lettGauge.innerHTML = "";
+  // }
 }
 
 function compareGuess(lett) {
@@ -375,6 +409,9 @@ function openCover(status) {
 	var solvArenaCover = document.getElementById("solv_arena_cover");
 	solvArenaCover.classList.remove('close-animate');
 	solvArenaCover.classList.add('open-animate');
+
+  // var solvArena = document.getElementById("solv_arena");
+  // solvArena.classList.add('radiate-animate');
 
 	//display background-content box
 	var solvArenaResult = document.getElementById("solv_arena_result");

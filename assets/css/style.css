@@ -4,7 +4,7 @@
 
 body {
   padding-top: 10px;
-  background-image: url("../images/metal.png");
+  background-image: url("../images/grey.png");
   font-size: 14px;
   font-family: 'Share Tech Mono', monospace;
   color: #000;
@@ -93,6 +93,11 @@ p {
   margin-right: 10px;
   background-image: url("../images/schrodingers-cat.png");
   background-size: 400px 232px;
+}
+
+.radiate-animate {
+  animation:radiate 0.5s infinite alternate;
+  animation-iteration-count: 10;
 }
 
 .solv-arena-mode {
@@ -213,6 +218,32 @@ p {
   font-weight: bold;
   font-size: 18px;
   color: #000;
+  position: relative;
+  background: #FFCC00;
+}
+
+.lett-pick {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 600px;
+}
+
+.alphabet {
+  padding: 0px 6px 0px 6px;
+  transition: all .2s ease-in-out;
+  color: #000;
+  z-index: 2
+}
+
+.alphabet:hover {
+  transform: scale(2.5);
 }
 
 .elem {
@@ -263,10 +294,7 @@ p {
   }
 }
 
-@keyframes example {
-    0%   {background-color:red; left:0px; top:0px;}
-    25%  {background-color:yellow; left:200px; top:0px;}
-    50%  {background-color:blue; left:200px; top:200px;}
-    75%  {background-color:green; left:0px; top:200px;}
-    100% {background-color:red; left:0px; top:0px;}
+@keyframes radiate {
+  from { box-shadow:0px 0px 10px 3px #7FFF00; }
+  to { box-shadow:0px 0px 20px 5px #7FFF00; }
 }
