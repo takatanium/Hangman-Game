@@ -257,6 +257,12 @@ p {
   width: 600px;
 }
 
+.lett-instr {
+  text-align: center;
+  width: 100%;
+  visibility: hidden;
+}
+
 .alphabet {
   padding: 0px 6px 0px 6px;
   transition: all .2s ease-in-out;

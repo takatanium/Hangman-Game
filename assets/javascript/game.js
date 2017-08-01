@@ -24,6 +24,7 @@ var luckComment = "Lucky kitty!";
 var mode = 1; //default to easy mode
 var wins;
 var losses;
+var overLosses;
 var elementSubSet = [];
 var elementPastSet = [];
 
@@ -61,7 +62,7 @@ document.addEventListener('keyup', function(event) {
   else if (stopGame && event.keyCode === 32 && !gameOver) {
     genElement();
     updateLettGauge();
-    displayInstructions("");
+    // displayInstructions("");
     stopGame = false;
   }
   //in game play
@@ -77,7 +78,7 @@ function captureKeyEvent(keyCodeNumber) {
   var letterIndex = keyCodeNumber - 65; //define the index of the keycode
   var keyChar = letters.charAt(letterIndex);
 
-  displayInstructions("");
+  // displayInstructions("");
 
   if (userGuess.indexOf(keyChar) === -1) { //ensure only unique guesses
     userGuess.push(keyChar); //add letter to user guess array
@@ -108,6 +109,7 @@ function captureKeyEvent(keyCodeNumber) {
     else {
       if ((userGuess.length - correctGuess.length) === maxAttempts) {
         losses++;
+        overLosses++;
         stopGame = true;
         updateLossGauge();
         updateWinGauge();
@@ -117,12 +119,12 @@ function captureKeyEvent(keyCodeNumber) {
         //check if reached max losses
         if (losses === maxLosses) {
           gameOver = true;
-          displayInstructions("");
+          // displayInstructions("");
           openCover(collapseWfn());
         }
         else if (elementSubSet.length === 0) {
           gameOver = true;
-          displayInstructions("");
+          // displayInstructions("");
           openCover("win");
         }
         else {
@@ -137,7 +139,7 @@ function captureKeyEvent(keyCodeNumber) {
     }
   }
   else {
-    displayInstructions(keyChar.toUpperCase() + " already used.");
+    // displayInstructions(keyChar.toUpperCase() + " already used.");
   }
 
   updateLettGauge();
@@ -148,6 +150,7 @@ function makeKeys(status) {
   updateLettGauge();
 
   var lettPick = document.getElementById("lett_pick");
+  lettPick.style.display = "flex";
   lettPick.innerHTML = "";
 
   if (status === "reset") {
@@ -190,6 +193,7 @@ function initiateGame(mode) {
   //reset all variables
   wins = 0;
   losses = 0;
+  overLosses = 0;
   elementSubSet = [];
   elementPastSet = [];
   userGuess = []; 
@@ -256,7 +260,7 @@ function clickElemGen() {
   if (stopGame && !gameOver) {
     genElement();
     updateLettGauge();
-    displayInstructions("");
+    // displayInstructions("");
     stopGame = false;
     makeKeys("reset");
   }
@@ -306,19 +310,6 @@ function updateLettGauge() {
   var guessStringPercent = guessPercent + '%';
 
   lettGauge.style.width = guessStringPercent;
-
-  // for (var i = 0; i < userGuess.length; i++) {
-  //   if (correctGuess.indexOf(userGuess[i]) === -1) {
-  //     guessChars += userGuess[i].toUpperCase() + " ";
-  //   }
-  // }
-
-  // if (guessChars.length > 0) {
-  //   lettGauge.innerHTML = guessChars;
-  // }
-  // else {
-  //   lettGauge.innerHTML = "";
-  // }
 }
 
 function compareGuess(lett) {
@@ -351,7 +342,7 @@ function updateLossGauge() {
 
 function updateWinGauge() {
   var winGauge = document.getElementById("win_gauge");
-  var winPercent = (wins / (maxWins - losses)) * 100;
+  var winPercent = (wins / (maxWins - overLosses)) * 100;
   var winStringPercent = Math.ceil(winPercent) + '%';
   // var winInnerHTML = wins.toString() + " / " + maxWins.toString();
   winGauge.style.width = winStringPercent;
@@ -461,17 +452,16 @@ function openCover(status) {
 	solvArenaCover.classList.remove('close-animate');
 	solvArenaCover.classList.add('open-animate');
 
-  // var solvArena = document.getElementById("solv_arena");
-  // solvArena.classList.add('radiate-animate');
-
 	//display background-content box
 	var solvArenaResult = document.getElementById("solv_arena_result");
 	solvArenaResult.style.visibility = "visible";
 }
 
 function displayInstructions(instr) {
-	var coverInfoText3 = document.getElementById("cover_info_text3");
-	coverInfoText3.innerHTML = instr;
+	var lettInstr = document.getElementById("lett_pick");
+	lettInstr.innerHTML = instr;
+  lettInstr.style.display = "block";
+  lettInstr.style.visibility = "visible";
 }
 
 function resetGame(val) {
@@ -510,12 +500,13 @@ function resetGame(val) {
   	printElements();
     elementIndex = -1
     wins = 0;
+    overLosses = 0;
   }
   //continue game
   else {
     closeCover();
     genElement();
-    displayInstructions("");
+    // displayInstructions("");
     stopGame = false;
   }
 
@@ -524,4 +515,14 @@ function resetGame(val) {
   updateLossGauge();
   updateWinGauge();
   updateLettGauge();
+
+  var winGauge = document.getElementById("win_gauge");
+  var lossGauge = document.getElementById("loss_gauge");
+
+  winGauge.innerHTML = "";
+  lossGauge.innerHTML = "";
+
+  var lettGauge = document.getElementById("lett_gauge");
+  var guessStringPercent = '0%';
+  lettGauge.style.width = guessStringPercent;
 }
