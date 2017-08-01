@@ -70,6 +70,11 @@ p {
   flex-direction: row;
 }
 
+.win {
+  display: flex;
+  flex-direction: row;
+}
+
 .progress {
   margin: 0;
   flex: 1;
@@ -82,6 +87,17 @@ p {
 }
 
 .loss-gauge {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.win-icon {
+  height: 20px;
+  width: 20px;
+  margin-left: 10px;
+}
+
+.win-gauge {
   font-size: 16px;
   font-weight: bold;
 }

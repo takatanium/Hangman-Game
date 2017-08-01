@@ -8,6 +8,7 @@ var gameMode = [ [18, "Easy", "#5bc0de"], //easy mode
 
 var letters  = "abcdefghijklmnopqrstuvwxyz";
 
+var maxWins;
 var maxAttempts = 3;
 var maxLosses = 4;
 
@@ -42,6 +43,7 @@ var toggleSymbol = true;
 
 //sounds
 var bellSound = new Audio("assets/audio/bell.mp3");
+var meowSound = new Audio("assets/audio/meow2.mp3");
 var clonkSound = new Audio("assets/audio/clonk.mp3");
 var periodicSong = new Audio("assets/audio/periodic-song.mp3");
 var funeralSong = new Audio("assets/audio/funeral-song.mp3");
@@ -89,6 +91,7 @@ function captureKeyEvent(keyCodeNumber) {
         wins++;
         stopGame = true;
         shiftElements(true);
+        updateWinGauge();
 
         //check if anymore elements
         if (elementSubSet.length === 0) {
@@ -97,7 +100,7 @@ function captureKeyEvent(keyCodeNumber) {
         }
         else {
           displayInstructions("Hit Spacebar or Click on Element");
-          bellSound.play();
+          meowSound.play();
         }
 
       }
@@ -107,6 +110,7 @@ function captureKeyEvent(keyCodeNumber) {
         losses++;
         stopGame = true;
         updateLossGauge();
+        updateWinGauge();
         displayElement(1);
         shiftElements(false);
 
@@ -141,6 +145,8 @@ function captureKeyEvent(keyCodeNumber) {
 }
 
 function makeKeys(status) {
+  updateLettGauge();
+
   var lettPick = document.getElementById("lett_pick");
   lettPick.innerHTML = "";
 
@@ -205,6 +211,8 @@ function initiateGame(mode) {
   for (var i = 0; i < gameMode[mode][0]; i++) {
   	elementSubSet.push(elements[i]);
   }
+
+  maxWins = elementSubSet.length;
 
   //display to arena cover
   var coverInfoText1 = document.getElementById("cover_info_text1");
@@ -294,7 +302,7 @@ function displayElement(status) {
 function updateLettGauge() {
   var guessChars = "";
   var lettGauge = document.getElementById("lett_gauge");
-  var guessPercent = ((userGuess.length - correctGuess.length) / maxAttempts) * 100;
+  var guessPercent = 100 - (((userGuess.length - correctGuess.length) / maxAttempts) * 100);
   var guessStringPercent = guessPercent + '%';
 
   lettGauge.style.width = guessStringPercent;
@@ -339,6 +347,16 @@ function updateLossGauge() {
   lossGauge.style.width = lossStringPercent;
   // lossGauge.innerHTML = lossStringPercent;
   lossGauge.innerHTML = lossInnerHTML;
+}
+
+function updateWinGauge() {
+  var winGauge = document.getElementById("win_gauge");
+  var winPercent = (wins / (maxWins - losses)) * 100;
+  var winStringPercent = Math.ceil(winPercent) + '%';
+  // var winInnerHTML = wins.toString() + " / " + maxWins.toString();
+  winGauge.style.width = winStringPercent;
+  winGauge.innerHTML = winStringPercent;
+  // winGauge.innerHTML = winInnerHTML;
 }
 
 function printElements() {
@@ -504,5 +522,6 @@ function resetGame(val) {
   stopGame = false;
   gameOver = false;
   updateLossGauge();
+  updateWinGauge();
   updateLettGauge();
 }
