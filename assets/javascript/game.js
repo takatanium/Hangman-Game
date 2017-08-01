@@ -67,7 +67,7 @@ document.addEventListener('keyup', function(event) {
 
 //Main gameplay interaction, keyboard events
 function captureKeyEvent(keyCodeNumber) {
-
+  if (!stopGame) {
   // var letterIndex = event.keyCode - 65; //define the index of the keycode
   var letterIndex = keyCodeNumber - 65; //define the index of the keycode
   var keyChar = letters.charAt(letterIndex);
@@ -76,10 +76,11 @@ function captureKeyEvent(keyCodeNumber) {
 
   if (userGuess.indexOf(keyChar) === -1) { //ensure only unique guesses
     userGuess.push(keyChar); //add letter to user guess array
-    makeKeys();
+    makeKeys("reset");
 
     if (compareGuess(keyChar)) { //compare to chosen element string
       displayElement(0);
+      makeKeys("reset");
 
       if (elementString.length === 0) { //check if won
         wins++;
@@ -127,24 +128,44 @@ function captureKeyEvent(keyCodeNumber) {
   }
 
   updateLettGauge();
+  }
 }
 
-function makeKeys() {
+function makeKeys(status) {
   var lettPick = document.getElementById("lett_pick");
   lettPick.innerHTML = "";
-  var keyCodeNum;
 
-  for (var i = 0; i < letters.length; i++) {
-    //for each letter make a div
-    keyCodeNum = i + 65;
-    lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")'>" + letters[i].toUpperCase() + "</div>";
-    for (var j = 0; j < userGuess.length; j++) {
-      if (letters[i] === userGuess[j]) {
-        var lettPickX = document.getElementById("lett" + i);
-        lettPickX.style.color = "lightgrey";
-        console.log(userGuess);
+  if (status === "reset") {
+    var keyCodeNum;
+
+    for (var i = 0; i < letters.length; i++) {
+      //for each letter make a div
+      keyCodeNum = i + 65;
+      // lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")';>" + letters[i].toUpperCase() + "</div>";
+      lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")';></div>";
+      var lettPickX = document.getElementById("lett" + i);
+      lettPickX.innerHTML = letters[i].toUpperCase();
+
+      for (var j = 0; j < userGuess.length; j++) {
+
+        if (letters[i] === userGuess[j]) {
+          if (correctGuess.indexOf(userGuess[j]) === -1) { //wrong guess
+            lettPickX.innerHTML += "<div id='xout" + j + "'>X</div>";
+
+            var xout = document.getElementById("xout" + j);
+            xout.style.color = "red";
+            xout.style.position = "absolute";
+            xout.style.top = "0px";
+            xout.style.fontFamily = "'Julee', cursive";
+          }
+          // else { //correct guess
+          lettPickX.style.color = "lightgrey";
+          // }
+        }
+
       }
     }
+
   }
 }
 
@@ -194,7 +215,7 @@ function genElement() {
   correctGuess = [];
   elementString = "";
   stopGame = false;
-  makeKeys();
+  makeKeys("reset");
 
   //random generation of element in sub set
   elementIndex = Math.floor(Math.random() * elementSubSet.length);
@@ -220,7 +241,7 @@ function clickElemGen() {
     updateLettGauge();
     displayInstructions("");
     stopGame = false;
-    makeKeys();
+    makeKeys("reset");
   }
 }
 
@@ -445,6 +466,11 @@ function resetGame(val) {
   var elemGenText = document.getElementById("elem_gen_text");
   elemGenText.innerHTML = "";
 
+  losses = 0;
+  userGuess = [];
+  correctGuess = [];
+  makeKeys("clear");
+
   //reset game
   if (val === "0") { 
   	//remove elements in list
@@ -461,12 +487,8 @@ function resetGame(val) {
     stopGame = false;
   }
 
-  losses = 0;
-  userGuess = [];
-  correctGuess = [];
   stopGame = false;
   gameOver = false;
   updateLossGauge();
   updateLettGauge();
-  makeKeys();
 }
