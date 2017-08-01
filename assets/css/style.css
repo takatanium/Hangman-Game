@@ -253,6 +253,14 @@ p {
   z-index: 10 !important;
 }
 
+.alphabet:active {
+  transform: scale(1.5) translateY(-5px);
+  -webkit-transform: scale(1.5) translateY(-5px);
+  -moz-transform: scale(1.5) translateY(-5px);
+  background-color: white;
+  z-index: 10 !important;
+}
+
 .elem {
   display: flex;
   flex-direction: row;
