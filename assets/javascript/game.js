@@ -125,7 +125,7 @@ function captureKeyEvent(keyCodeNumber) {
           clonkSound.play();
           displayInstructions("Hit Spacebar or Click on Element");
         }
-        
+
       }
       else {
       displayElement(0);
@@ -335,8 +335,10 @@ function updateLossGauge() {
   var lossGauge = document.getElementById("loss_gauge");
   var lossPercent = (losses / maxLosses) * 100;
   var lossStringPercent = lossPercent + '%';
+  var lossInnerHTML = losses.toString() + " / " + maxLosses.toString();
   lossGauge.style.width = lossStringPercent;
-  lossGauge.innerHTML = lossStringPercent;
+  // lossGauge.innerHTML = lossStringPercent;
+  lossGauge.innerHTML = lossInnerHTML;
 }
 
 function printElements() {
