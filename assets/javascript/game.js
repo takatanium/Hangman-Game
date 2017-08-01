@@ -46,14 +46,15 @@ var clonkSound = document.getElementById("clonk_sound");
 
 //event listeners
 document.addEventListener('keyup', function(event) {
+
   //initiate the game
   if (elementGen === "" && elementIndex === -1) {
   	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4" || event.key === "5") {
     	initiateGame(event.key-1);
   	}
   }
-  //generate new element
-  else if (stopGame && event.keyCode === 13 && !gameOver) {
+  //generate new element on spacebar
+  else if (stopGame && event.keyCode === 32 && !gameOver) {
     genElement();
     updateLettGauge();
     displayInstructions("");
@@ -86,7 +87,7 @@ function captureKeyEvent(keyCodeNumber) {
         wins++;
         stopGame = true;
         bellSound.play();
-        displayInstructions("Press Enter or Click on Element");
+        displayInstructions("Hit Spacebar or Click on Element");
         shiftElements(true);
 
         //check if anymore elements
@@ -101,7 +102,7 @@ function captureKeyEvent(keyCodeNumber) {
         losses++;
         stopGame = true;
         clonkSound.play();
-        displayInstructions("Press Enter or Click on Element");
+        displayInstructions("Hit Spacebar or Click on Element");
         updateLossGauge();
         displayElement(1);
         shiftElements(false);
