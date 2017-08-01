@@ -495,6 +495,8 @@ function resetGame(val) {
 
   var winGauge = document.getElementById("win_gauge");
   var lossGauge = document.getElementById("loss_gauge");
+  var lettGauge = document.getElementById("lett_gauge");
+  var guessStringPercent = '0%';
 
   //reset game
   if (val === "0") { 
@@ -505,9 +507,6 @@ function resetGame(val) {
     wins = 0;
     overLosses = 0;
     winGauge.innerHTML = "";
-    var lettGauge = document.getElementById("lett_gauge");
-    var guessStringPercent = '0%';
-    lettGauge.style.width = guessStringPercent;
   }
   //continue game
   else {
@@ -515,6 +514,7 @@ function resetGame(val) {
     genElement();
     // displayInstructions("");
     stopGame = false;
+    guessStringPercent = '100%';
   }
 
   stopGame = false;
@@ -524,4 +524,5 @@ function resetGame(val) {
   updateLettGauge();
 
   lossGauge.innerHTML = "";
+  lettGauge.style.width = guessStringPercent;
 }
