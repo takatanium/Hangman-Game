@@ -247,6 +247,8 @@ p {
 
 .alphabet:hover {
   transform: scale(1.5) translateY(-5px);
+  -webkit-transform: scale(1.5) translateY(-5px);
+  -moz-transform: scale(1.5) translateY(-5px);
   background-color: white;
   z-index: 10 !important;
 }
@@ -291,8 +293,40 @@ p {
     height: 232px;
   }
 }
+@-webkit-keyframes close-cover {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 232px;
+  }
+}
+@-moz-keyframes close-cover {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 232px;
+  }
+}
 
 @keyframes open-cover {
+  from {
+    height:232px;
+  }
+  to {
+    height: 0px;
+  }
+}
+@-webkit-keyframes open-cover {
+  from {
+    height:232px;
+  }
+  to {
+    height: 0px;
+  }
+}
+@-moz-keyframes open-cover {
   from {
     height:232px;
   }
