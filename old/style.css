@@ -1,0 +1,272 @@
+* {
+  /*box-sizing: border-box;*/
+  border-radius: 0 !important;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  background-image: url("../images/metal.png");
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-family: 'Share Tech Mono', monospace;
+  color: black;
+  text-align: center;
+  padding-top: 40px;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 4px 0px 0px 0px;
+  padding: 0px 2px 0px 2px;
+  border-bottom: solid #cccccc 2px;
+  padding-bottom: 4px;
+}
+
+p {
+  font-size: 20px;
+  text-align: left;
+  margin: 0px;
+}
+
+.list-group-item {
+  padding: 3px 2px 3px 2px;
+  text-align: left;
+  font-size: 14px
+}
+
+.container {
+  /*width: 65%;*/
+  width: 630px;
+  margin: 0 auto;
+}
+
+.header-wrap {
+  height: 100px;
+}
+
+.top-logo {
+  float: left;
+}
+
+.bottom-logo {
+  float: right;
+}
+
+.header-img {
+  height: 55px;
+}
+
+body>.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+}
+
+.main-box {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.animation-box {
+  width: 404px;
+  height: 236px;
+  background: white;
+  border: solid #cccccc 2px; 
+  margin-right: 10px;
+  position: relative;
+  background-image: url("../images/schrodingers-cat.png");
+  background-size: 420px 264px;
+}
+
+.difficulty-box {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+}
+
+.element-list-box {
+  background: white;
+  border: solid #cccccc 2px; 
+  height: 236px;
+  width: 186px;
+}
+
+.progress-box {
+  margin: 0px;
+  flex: 1;
+}
+
+#guess_bar {
+  font-size: 20px;
+}
+
+.guess-box {
+  width: 100%;
+  height: 100px;
+  background: white;
+  border: solid #cccccc 2px; 
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.element-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: solid #cccccc 2px; 
+  padding: 0px 5px 0px 5px;
+}
+
+.element-string-box {
+  flex: 1;
+}
+
+#symbol {
+  line-height: 75px;
+  flex: 1;
+  font-size: 60px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+#element {
+  line-height: 100px;
+  font-size: 2.25em;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.guess-progress-box {
+  display: flex;
+  flex-direction: row;
+}
+
+.loss-progress-box {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+#radioactive_img {
+  max-height: 20px;
+  max-width: 20px;
+  margin-left: 10px;
+}
+
+.dynamic-box {
+  overflow-y: scroll;
+  height: 202px;
+}
+
+.cover-box {
+  position: relative;
+  max-width: 400px; 
+  visibility: hidden;
+  overflow: hidden;
+  position: relative;
+}
+
+.cover-animate {
+  height: 232px;
+  visibility: visible;
+  animation: close-cover 2s;
+  -webkit-animation: close-cover 2s;
+  -moz-animation: close-cover 2s;
+}
+
+.open-animate {
+  height: 0;
+  animation: open-cover 2s;
+  -webkit-animation: open-cover 2s;
+  -moz-animation: open-cover 2s;
+}
+
+.cover-img {
+  width: 400px;
+  height: 232px;
+}
+
+.mode-box {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 404px;
+  height: 236px;
+  text-shadow: 0px 0px 1px #fff;
+}
+
+.mode-indication {
+  text-align: center;
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.remaining-indication {
+  text-align: center;
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+#instructions {
+  position: relative;
+  bottom: 60px;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px #fff;
+}
+
+.background-content {
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+}
+
+.game-over-text {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 404px;
+  height: 236px;
+}
+
+#result_text {
+  text-align: center;
+  padding-top: 5px;
+  font-weight: bold;
+  font-size: 30px;
+  color: #7FFF00;
+  text-shadow: 2px 2px 2px #000000;
+}
+
+.again-text {
+  position: relative;
+  top: 140px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px #fff;
+}
+
+@keyframes close-cover {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 232px;
+  }
+}
+
+@keyframes open-cover {
+  from {
+    height:232px;
+  }
+  to {
+    height: 0px;
+  }
+}

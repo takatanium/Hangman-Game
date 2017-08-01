@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <title>Hangman</title>
+
+</head>
+
+<body>
+
+  <header class="header-wrap">
+    <div class="container">
+      <div class="top-logo"><img src="assets/images/schrodinger-logo.png" class="header-img" id="schrodinger_logo" alt="Schrodinger Logo"></div>      
+      <div class="bottom-logo"><img src="assets/images/hangman-logo.png" class="header-img" id="hangman_logo" alt="Hangman Logo"></div>
+    </div>
+  </header>
+
+  <div class="container">
+
+		<div class="loss-progress-box">
+	    <div class="progress progress-box">
+	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" id="loss_bar"></div>
+	    </div>
+	    <img src="assets/images/radioactive.png" id="radioactive_img" alt="Radioactive Logo">
+    </div>
+
+    <div class="main-box">
+
+      <div class="animation-box" id="animation_box">
+
+        <div class="background-content" id="background_content">
+          <iframe src="" width="400px" height="232px" frameBorder="0" id="game_done" class="giphy-embed"></iframe>
+          <div class="game-over-text">
+            <p id="result_text"></p>
+            <button type="button" class="btn btn-warning again-text" id="reset_game" onclick="resetGame();">Play Again?</button>
+          </div>
+        </div>
+
+        <div class="difficulty-box" id="difficulty_box">
+          <p>Choose Difficulty</p>
+          <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
+          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Medium</button>
+          <button type="button" class="btn btn-danger" onclick="initiateGame(2);">Hard</button>
+          <button type="button" class="btn btn-success" onclick="initiateGame(3);">Atomic</button>
+        </div>
+
+        <div class="cover-box" id="cover_box">
+          <img src="assets/images/cover-sticker.jpg" class="cover-img" alt="Metal Cover"> 
+          <div class="mode-box" id="mode_box">
+            <p class="mode-indication">Mode: <span id="which_mode"></span></p>
+            <p class="remaining-indication">Remaining: <span id="remaining_elements"></span></p>
+          </div>
+          <div id="instructions"></div>
+        </div>
+      
+      </div>
+
+      <div class="element-list-box" title="Click on Element for more information!">
+        <h2> Element List</h2>
+        <div class="dynamic-box">
+          <div class="list-group" id="element_past"></div>
+        </div>
+      </div>
+    </div>
+		
+		<div class="guess-progress-box">
+	    <div class="progress progress-box">
+	      <div class="progress-bar progress-bar-warning progress-bar-striped progress-bar-animated" id="guess_bar"></div>
+	    </div>
+    </div>
+
+    <div class="guess-box">
+      <div class="element-box">
+        <div id="symbol"></div>
+        <div>Name Element</div>
+      </div>
+      <div class="element-string-box">
+        <span id="element"></span>
+        <audio id="bell_sound" src="assets/audio/bell.mp3" autostart="false"></audio>
+        <audio id="clonk_sound" src="assets/audio/clonk.mp3" autostart="false"></audio>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="assets/javascript/game.js"></script>
+    
+</body>
+</html>

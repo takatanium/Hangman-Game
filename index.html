@@ -10,90 +10,95 @@
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
 
-  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/style2.css" rel="stylesheet">
 
   <title>Hangman</title>
 
 </head>
 
 <body>
+	
+	<div class="container">
+	
+		<div class="banner auto-margin">
+			<img src="assets/images/schrodinger-logo.png" class="banner-top-img" alt="Schrodinger Logo">
+			<img src="assets/images/hangman-logo.png" class="banner-bottom-img" alt="Hangman Logo">
+		</div>
 
-  <header class="header-wrap">
-    <div class="container">
-      <div class="top-logo"><img src="assets/images/schrodinger-logo.png" class="header-img" id="schrodinger_logo" alt="Schrodinger Logo"></div>      
-      <div class="bottom-logo"><img src="assets/images/hangman-logo.png" class="header-img" id="hangman_logo" alt="Hangman Logo"></div>
-    </div>
-  </header>
-
-  <div class="container">
-
-		<div class="loss-progress-box">
-	    <div class="progress progress-box">
-	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated" id="loss_bar"></div>
+		<div class="loss auto-margin">
+			<div class="progress">
+	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated loss-gauge" id="loss_gauge"></div>
 	    </div>
-	    <img src="assets/images/radioactive.png" id="radioactive_img" alt="Radioactive Logo">
-    </div>
+			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo">
+		</div>
 
-    <div class="main-box">
+		<div class="solv auto-margin">
+			<div class="solv-arena internal-box" id="solv_arena">
 
-      <div class="animation-box" id="animation_box">
-
-        <div class="background-content" id="background_content">
-          <iframe src="" width="400px" height="232px" frameBorder="0" id="game_done" class="giphy-embed"></iframe>
-          <div class="game-over-text">
-            <p id="result_text"></p>
-            <button type="button" class="btn btn-warning again-text" id="reset_game" onclick="resetGame();">Play Again?</button>
-          </div>
-        </div>
-
-        <div class="difficulty-box" id="difficulty_box">
+				<div class="solv-arena-mode" id="solv_arena_mode">
           <p>Choose Difficulty</p>
           <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
-          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Medium</button>
+          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Mid</button>
           <button type="button" class="btn btn-danger" onclick="initiateGame(2);">Hard</button>
           <button type="button" class="btn btn-success" onclick="initiateGame(3);">Atomic</button>
         </div>
 
-        <div class="cover-box" id="cover_box">
-          <img src="assets/images/cover-sticker.jpg" class="cover-img" alt="Metal Cover"> 
-          <div class="mode-box" id="mode_box">
-            <p class="mode-indication">Mode: <span id="which_mode"></span></p>
-            <p class="remaining-indication">Remaining: <span id="remaining_elements"></span></p>
+        <div class="solv-arena-cover" id="solv_arena_cover">
+          <img src="assets/images/cover-sticker.jpg" class="arena-cover-img" id="arena_cover_img" alt="Metal Cover"> 
+          <div class="arena-cover-info" id="arena_cover_info">
+            <p class="cover-info-text1">Mode: <span id="cover_info_text1"></span></p>
+            <p class="cover-info-text2">Remaining: <span id="cover_info_text2"></span></p>
           </div>
-          <div id="instructions"></div>
+          <div class="cover-info-text3" id="cover_info_text3"></div>
         </div>
-      
-      </div>
 
-      <div class="element-list-box" title="Click on Element for more information!">
-        <h2> Element List</h2>
-        <div class="dynamic-box">
-          <div class="list-group" id="element_past"></div>
+				<div class="solv-arena-result" id="solv_arena_result">
+          <iframe src="" width="400px" height="232px" frameBorder="0" id="arena_result_gif" class="giphy-embed arena-result-gif"></iframe>
+          <div class="arena-result-info">
+            <p class="result-info-text" id="result_info_text"></p>
+            <button type="button" class="btn btn-warning result-info-btn" id="result_info_btn" onclick="resetGame(this.value);"></button>
+          </div>
         </div>
-      </div>
-    </div>
-		
-		<div class="guess-progress-box">
-	    <div class="progress progress-box">
-	      <div class="progress-bar progress-bar-warning progress-bar-striped progress-bar-animated" id="guess_bar"></div>
-	    </div>
-    </div>
 
-    <div class="guess-box">
-      <div class="element-box">
-        <div id="symbol"></div>
-        <div>Name Element</div>
-      </div>
-      <div class="element-string-box">
-        <span id="element"></span>
-        <audio id="bell_sound" src="assets/audio/bell.mp3" autostart="false"></audio>
-        <audio id="clonk_sound" src="assets/audio/clonk.mp3" autostart="false"></audio>
-      </div>
-    </div>
+			</div>
+			<div class="solv-list internal-box" title="Click on Element for more information!">
+				<h2> Element List</h2>
+				<div class="solv-list-items">
+					<div class="list-group" id="solv_list_items"></div>
+				</div>
+			</div>
+		</div>
 
-  </div>
+		<div class="lett auto-margin">
+			<div class="lett-gauge">
+				<div class="progress">
+		      <div class="progress-bar progress-bar-warning progress-bar-striped progress-bar-animated lett-gauge" id="lett_gauge"></div>
+		    </div>
+				<div class="lett-pick">
+				</div>
+			</div>
+		</div>
 
-  <script src="assets/javascript/game.js"></script>
+		<div class="elem auto-margin">
+			<div class="elem-gen internal-box">
+				<div class="elem-gen-text" id="elem_gen_text"></div>
+				<h3>Name Element</h3>
+			</div>
+			<div class="elem-guess internal-box">
+				<span class="elem-guess-text" id="elem_guess_text"></span>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Audio Src -->
+	<audio id="bell_sound" src="assets/audio/bell.mp3" autostart="false"></audio>
+  <audio id="clonk_sound" src="assets/audio/clonk.mp3" autostart="false"></audio>
+
+	<!-- Run game.js -->
+  <!-- <script src="assets/javascript/game.js"></script> -->
+  <script src="assets/javascript/elements.js"></script>
+  <script src="assets/javascript/game2.js"></script>
     
 </body>
 </html>
