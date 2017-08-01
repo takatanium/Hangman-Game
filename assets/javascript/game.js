@@ -493,6 +493,9 @@ function resetGame(val) {
   correctGuess = [];
   makeKeys("clear");
 
+  var winGauge = document.getElementById("win_gauge");
+  var lossGauge = document.getElementById("loss_gauge");
+
   //reset game
   if (val === "0") { 
   	//remove elements in list
@@ -501,6 +504,10 @@ function resetGame(val) {
     elementIndex = -1
     wins = 0;
     overLosses = 0;
+    winGauge.innerHTML = "";
+    var lettGauge = document.getElementById("lett_gauge");
+    var guessStringPercent = '0%';
+    lettGauge.style.width = guessStringPercent;
   }
   //continue game
   else {
@@ -516,13 +523,5 @@ function resetGame(val) {
   updateWinGauge();
   updateLettGauge();
 
-  var winGauge = document.getElementById("win_gauge");
-  var lossGauge = document.getElementById("loss_gauge");
-
-  winGauge.innerHTML = "";
   lossGauge.innerHTML = "";
-
-  var lettGauge = document.getElementById("lett_gauge");
-  var guessStringPercent = '0%';
-  lettGauge.style.width = guessStringPercent;
 }
