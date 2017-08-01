@@ -86,43 +86,46 @@ function captureKeyEvent(keyCodeNumber) {
       makeKeys("reset");
 
       if (elementString.length === 0) { //check if won
-        bellSound.play();
         wins++;
         stopGame = true;
-        displayInstructions("Hit Spacebar or Click on Element");
         shiftElements(true);
 
         //check if anymore elements
         if (elementSubSet.length === 0) {
-          bellSound.play();
           gameOver = true;
           openCover("win");
         }
+        else {
+          displayInstructions("Hit Spacebar or Click on Element");
+          bellSound.play();
+        }
+
       }
     }
     else {
       if ((userGuess.length - correctGuess.length) === maxAttempts) {
-        clonkSound.play();
         losses++;
         stopGame = true;
-        displayInstructions("Hit Spacebar or Click on Element");
         updateLossGauge();
         displayElement(1);
         shiftElements(false);
 
         //check if reached max losses
         if (losses === maxLosses) {
-          clonkSound.play();
           gameOver = true;
           displayInstructions("");
           openCover(collapseWfn());
         }
         else if (elementSubSet.length === 0) {
-          clonkSound.play();
           gameOver = true;
           displayInstructions("");
           openCover("win");
         }
+        else {
+          clonkSound.play();
+          displayInstructions("Hit Spacebar or Click on Element");
+        }
+        
       }
       else {
       displayElement(0);

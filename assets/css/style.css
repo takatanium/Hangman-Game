@@ -132,9 +132,9 @@ p {
 
 .open-animate {
   height: 0;
-  animation: open-cover 4s;
-  -webkit-animation: open-cover 4s;
-  -moz-animation: open-cover 4s;
+  animation: open-cover 2s;
+  -webkit-animation: open-cover 2s;
+  -moz-animation: open-cover 2s;
 }
 
 .arena-cover-img {
