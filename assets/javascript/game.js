@@ -43,6 +43,8 @@ var toggleSymbol = true;
 //sounds
 var bellSound = new Audio("assets/audio/bell.mp3");
 var clonkSound = new Audio("assets/audio/clonk.mp3");
+var periodicSong = new Audio("assets/audio/periodic-song.mp3");
+var funeralSong = new Audio("assets/audio/funeral-song.mp3");
 
 //event listeners
 document.addEventListener('keyup', function(event) {
@@ -410,6 +412,7 @@ function openCover(status) {
   var resultInfoBtn = document.getElementById("result_info_btn");
 
 	if (status === "lost") {
+    funeralSong.play();
 		arenaResultGif.src = deathGif;
 		resultInfoText.innerHTML = deathComment;
     resultInfoBtn.innerHTML = "Replay?"
@@ -422,6 +425,7 @@ function openCover(status) {
     resultInfoBtn.value = 1;
 	}
 	else { //this is a overall win
+    periodicSong.play();
 		arenaResultGif.src = winGif;
 		resultInfoText.innerHTML = winComment;
     resultInfoBtn.innerHTML = "Replay?"
@@ -448,7 +452,8 @@ function displayInstructions(instr) {
 }
 
 function resetGame(val) {
-  console.log(val);
+  periodicSong.pause();
+  funeralSong.pause();
 
 	//hide gif
 	var solvArenaResult = document.getElementById("solv_arena_result");
