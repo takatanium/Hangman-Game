@@ -4,7 +4,7 @@
 
 body {
   padding-top: 10px;
-  background-image: url("../images/grey.png");
+  background-image: url("../images/metal.png");
   font-size: 14px;
   font-family: 'Share Tech Mono', monospace;
   color: #000;
@@ -104,6 +104,7 @@ p {
   position: absolute;
   top: 3px;
   left: 10px;
+  z-index: 6;
 }
 
 .solv-arena-cover {
@@ -239,16 +240,22 @@ p {
   padding: 0px 6px 0px 6px;
   transition: all .2s ease-in-out;
   color: #000;
-  z-index: 2
+  z-index: 2;
+  cursor: pointer; 
+  cursor: hand;
 }
 
 .alphabet:hover {
-  transform: scale(2.5);
+  transform: scale(1.5) translateY(-5px);
+  background-color: white;
+  z-index: 10 !important;
 }
 
 .elem {
   display: flex;
   flex-direction: row;
+  cursor: pointer; 
+  cursor: hand;
 }
 
 .elem-gen {
