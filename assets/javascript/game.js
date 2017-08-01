@@ -41,8 +41,8 @@ var elementGen = "";
 var toggleSymbol = true;
 
 //sounds
-var bellSound = document.getElementById("bell_sound");
-var clonkSound = document.getElementById("clonk_sound");
+var bellSound = new Audio("assets/audio/bell.mp3");
+var clonkSound = new Audio("assets/audio/clonk.mp3");
 
 //event listeners
 document.addEventListener('keyup', function(event) {
@@ -84,14 +84,15 @@ function captureKeyEvent(keyCodeNumber) {
       makeKeys("reset");
 
       if (elementString.length === 0) { //check if won
+        bellSound.play();
         wins++;
         stopGame = true;
-        bellSound.play();
         displayInstructions("Hit Spacebar or Click on Element");
         shiftElements(true);
 
         //check if anymore elements
         if (elementSubSet.length === 0) {
+          bellSound.play();
           gameOver = true;
           openCover("win");
         }
@@ -99,9 +100,9 @@ function captureKeyEvent(keyCodeNumber) {
     }
     else {
       if ((userGuess.length - correctGuess.length) === maxAttempts) {
+        clonkSound.play();
         losses++;
         stopGame = true;
-        clonkSound.play();
         displayInstructions("Hit Spacebar or Click on Element");
         updateLossGauge();
         displayElement(1);
@@ -109,11 +110,13 @@ function captureKeyEvent(keyCodeNumber) {
 
         //check if reached max losses
         if (losses === maxLosses) {
+          clonkSound.play();
           gameOver = true;
           displayInstructions("");
           openCover(collapseWfn());
         }
         else if (elementSubSet.length === 0) {
+          clonkSound.play();
           gameOver = true;
           displayInstructions("");
           openCover("win");
