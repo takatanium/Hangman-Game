@@ -31,10 +31,10 @@
 
 				<div class="cid-arena-mode" id="cid_arena_mode">
           <p>Choose Difficulty</p>
-          <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
-          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Mid</button>
-          <button type="button" class="btn btn-danger" onclick="initiateGame(2);">Hard</button>
-          <button type="button" class="btn btn-success" onclick="initiateGame(3);">Atomic</button>
+          <button type="button" class="btn btn-info" onclick="game.init(gameMode[0]);">Easy</button>
+          <button type="button" class="btn btn-warning" onclick="game.init(gameMode[1]);">Mid</button>
+          <button type="button" class="btn btn-danger" onclick="game.init(gameMode[2]);">Hard</button>
+          <button type="button" class="btn btn-success" onclick="game.init(gameMode[3]);">Atomic</button>
         </div>
 
         <div class="cid-arena-cover" id="cid_arena_cover">
@@ -101,7 +101,7 @@
 	<!-- Run game.js -->
   <script src="assets/javascript/tools.js"></script>
   <script src="assets/javascript/elementsObjects.js"></script>
-  <script src="assets/javascript/game.js"></script>
+  <script src="assets/javascript/gameObject.js"></script>
 
   <script>
   </script>

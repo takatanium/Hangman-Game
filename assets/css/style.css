@@ -102,12 +102,12 @@ p {
   font-weight: bold;
 }
 
-.solv {
+.cid {
   display: flex;
   flex-direction: row;
 }
 
-.solv-arena {
+.cid-arena {
   position: relative;
   height: 236px;
   width: 404px;
@@ -121,14 +121,14 @@ p {
   animation-iteration-count: 10;
 }
 
-.solv-arena-mode {
+.cid-arena-mode {
   position: absolute;
   top: 3px;
   left: 10px;
   z-index: 6;
 }
 
-.solv-arena-cover {
+.cid-arena-cover {
   position: relative;
   visibility: hidden;
   overflow: hidden;
@@ -189,7 +189,7 @@ p {
   font-size: 18px;
 }
 
-.solv-arena-result {
+.cid-arena-result {
   position: absolute;
   top: 0;
   visibility: hidden;
@@ -220,12 +220,12 @@ p {
   text-shadow: 0px 0px 1px #fff;
 }
 
-.solv-list {
+.cid-list {
   height: 236px;
   width: 186px;
 }
 
-.solv-list-items {
+.cid-list-items {
   overflow-y: scroll;
   height: 202px;
 }

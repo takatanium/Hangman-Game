@@ -351,7 +351,7 @@ function updateWinGauge() {
 }
 
 function printElements() {
-	var solvListItems = document.getElementById("solv_list_items");
+	var solvListItems = document.getElementById("cid_list_items");
 	solvListItems.innerHTML = "";
 
 	var symOrNum;
@@ -401,10 +401,10 @@ function shiftElements(correctGuess) {
 
 //This is done at start of game or if cat survives
 function closeCover() {
-	var solvArenaMode = document.getElementById("solv_arena_mode")
+	var solvArenaMode = document.getElementById("cid_arena_mode")
   solvArenaMode.style.visibility = "hidden";
 	
-	var solvArenaCover = document.getElementById("solv_arena_cover");
+	var solvArenaCover = document.getElementById("cid_arena_cover");
 	solvArenaCover.classList.remove('open-animate');
 	solvArenaCover.classList.add('cover-animate');
 
@@ -416,7 +416,7 @@ function openCover(status) {
 	elementGen = ""; //make sure keyboard cannot be used
 
 	//remove schrodinger background
-	var solvArena = document.getElementById("solv_arena");
+	var solvArena = document.getElementById("cid_arena");
   solvArena.style.backgroundImage = "none";
 	// solvArena.style.visibility = "hidden";
 
@@ -447,13 +447,13 @@ function openCover(status) {
 	}
 
 	//animate opening of cover
-	document.getElementById("solv_arena_mode").style.visibility = "hidden";
-	var solvArenaCover = document.getElementById("solv_arena_cover");
+	document.getElementById("cid_arena_mode").style.visibility = "hidden";
+	var solvArenaCover = document.getElementById("cid_arena_cover");
 	solvArenaCover.classList.remove('close-animate');
 	solvArenaCover.classList.add('open-animate');
 
 	//display background-content box
-	var solvArenaResult = document.getElementById("solv_arena_result");
+	var solvArenaResult = document.getElementById("cid_arena_result");
 	solvArenaResult.style.visibility = "visible";
 }
 
@@ -469,15 +469,15 @@ function resetGame(val) {
   funeralSong.pause();
 
 	//hide gif
-	var solvArenaResult = document.getElementById("solv_arena_result");
+	var solvArenaResult = document.getElementById("cid_arena_result");
 	solvArenaResult.style.visibility = "hidden";
 
 	//replace schrodinger background
-	var solvArena = document.getElementById("solv_arena");
+	var solvArena = document.getElementById("cid_arena");
 	solvArena.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
 
 	//show mode selection
-	var solvArenaMode = document.getElementById("solv_arena_mode");
+	var solvArenaMode = document.getElementById("cid_arena_mode");
 	solvArenaMode.style.visibility = "visible";
 
   //remove guess element
