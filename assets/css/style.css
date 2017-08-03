@@ -84,6 +84,8 @@ p {
   height: 20px;
   width: 20px;
   margin-left: 10px;
+  cursor: pointer; 
+  cursor: hand;
 }
 
 .loss-gauge {
@@ -94,7 +96,9 @@ p {
 .win-icon {
   height: 20px;
   width: 20px;
-  margin-left: 10px;
+  margin-left: 10px;  
+  cursor: pointer; 
+  cursor: hand;
 }
 
 .win-gauge {

@@ -1,528 +1,575 @@
 //Global constant variables
-var gameMode = [ [18, "Easy", "#5bc0de"], //easy mode
-                 [54, "Medium", "#f0ad4e"], //medium mode
-                 [109, "Hard", "#d9534f"], //hard mode
-                 [109, "Atomic", "#5cb85c"], //atomic mode
-                 [5, "Debug", "#000000"] //debug mode
-               ];
 
+// Game difficulty objects
+var gameMode = [];
+
+var easyMode = {
+		desig:"Easy", 
+		iStart: 0, 
+		iStop: 18,
+		set: [0,18], 
+		display: "symbol", 
+		maxWins: 10,
+		maxAttempt: 3, 
+		maxLoss: 4, 
+		lossPenalty: 25,
+		winAward: 5,
+		color: "#5bc0de"};
+gameMode.push(easyMode);
+
+var midMode = {
+		desig:"Mid", 
+		iStart: 0, 
+		iStop: 54, 
+		set: [0,54],
+		display: "symbol", 
+		maxWins: 10,
+		maxAttempt: 3, 
+		maxLoss: 4, 
+		winAward: 5,
+		lossPenalty: 25,
+		color: "#f0ad4e"};
+gameMode.push(midMode);
+
+var hardMode = {
+		desig: "Hard",
+		iStart: 0, 
+		iStop: 109,
+		set: [0,109], 
+		display: "symbol",
+		maxWins: 10,
+		maxAttempt: 3, 
+		maxLoss: 4, 
+		winAward: 5,
+		lossPenalty: 25,
+		color: "#d9534f"};
+gameMode.push(hardMode);
+
+var atomicMode = {
+		desig:"Atomic",
+		iStart: 0,
+		iStop: 109, 
+		set: [0,109],
+		display: "number", 
+		maxWins: 10,
+		maxAttempt: 3, 
+		maxLoss: 4, 
+		lossPenalty: 25,
+		winAward: 5,
+		color: "#5cb85c"};
+gameMode.push(atomicMode);
+
+var debugMode = {
+		desig: "Debug", 
+		iStart: 0, 
+		iStop: 5, 
+		set: [0,5],
+		display: "symbol", 
+		maxWins: 10,
+		maxAttempt: 3, 
+		maxLoss: 4, 
+		lossPenalty: 25,
+		winAward: 5,
+		color: "#000000"};
+gameMode.push(debugMode);
+
+//alphabet
 var letters  = "abcdefghijklmnopqrstuvwxyz";
 
-var maxWins;
-var maxAttempts = 3;
-var maxLosses = 4;
+//game result objects
+var aliveResult = {
+		desig:"alive", 
+    comment:"Awesome!", 
+    gif:"https://giphy.com/embed/c7kqZMtzMLpG8",
+};
 
-//Ending gifs
-var winGif = "https://giphy.com/embed/c7kqZMtzMLpG8";
-var winComment = "Awesome!";
-var deathGif = "https://giphy.com/embed/ZWZMwJtoqAzxS";
-var deathComment = "Game Over...";
-var luckGif = "https://giphy.com/embed/fliBUx4ZFB6HS";
-var luckComment = "Lucky kitty!";
+var deadResult = {
+		desig:"dead", 
+		comment:"Game Over...", 
+		gif:"https://giphy.com/embed/ZWZMwJtoqAzxS",
+};
+
+var contResult = {
+		desig:"cont", 
+		comment:"Lucky kitty!", 
+		gif:"https://giphy.com/embed/fliBUx4ZFB6HS",
+};
 
 //Reset at start of new game
-var mode = 1; //default to easy mode
-var wins;
-var losses;
-var overLosses;
-var elementSubSet = [];
-var elementPastSet = [];
+var overLoss; //running number of overall losses 
+var minLoss; //minimum amoutnof losses to lose
+var win; //dynamically set win counter
+var loss; //dynamically set loss counter
+var lossPercent = 0; //dynamically change loss gauge
+var elementSubSet = []; //subset of master elements array
+var elementPastSet = []; //history of past element generation
+var gameOver = true; //halt functions when game ends
+var mode; //game mode
 
-//Reset at start of new element
-var userGuess = []; 
-var correctGuess = [];
-var elementString = "";
-var stopGame = false;
-var gameOver = false;
+//Reset at start of element generation
+var userGuess = []; //letters that user guessed
+var correctGuess = []; //correct letters guessed
+var elementIndex = -1; //track current index of element array
+var elementString = ""; //track the current elements string
+var iElement = ""; //element generated
+var stopGame = true; //halt functions when element is shown
 
-//Indicates very first game
-var elementIndex = -1;
-var elementGen = "";
-
-//toggle whether atomic symbol or number is shown
-var toggleSymbol = true;
-
-//sounds
-var bellSound = new Audio("assets/audio/bell.mp3");
 var meowSound = new Audio("assets/audio/meow2.mp3");
 var clonkSound = new Audio("assets/audio/clonk.mp3");
-var periodicSong = new Audio("assets/audio/periodic-song.mp3");
-var funeralSong = new Audio("assets/audio/funeral-song.mp3");
+var aliveSong = new Audio("assets/audio/periodic-song.mp3");
+var deadSong = new Audio("assets/audio/funeral-song.mp3");
 
-//event listeners
+//keyboard event listener
 document.addEventListener('keyup', function(event) {
-
   //initiate the game
-  if (elementGen === "" && elementIndex === -1) {
+  if (iElement === "") {
   	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4" || event.key === "5") {
-    	initiateGame(event.key-1);
+    	game.init(gameMode[event.key-1]);
   	}
   }
   //generate new element on spacebar
-  else if (stopGame && event.keyCode === 32 && !gameOver) {
-    genElement();
-    updateLettGauge();
-    // displayInstructions("");
-    stopGame = false;
+  else if (stopGame && !gameOver && event.keyCode === 32 ) {
+    game.genElement();
   }
   //in game play
   else if (!stopGame && event.keyCode >= 65 && event.keyCode <= 90) {
-    captureKeyEvent(event.keyCode);
+  	game.update(event.keyCode);
   }
 });
 
-//Main gameplay interaction, keyboard events
-function captureKeyEvent(keyCodeNumber) {
-  if (!stopGame) {
-  // var letterIndex = event.keyCode - 65; //define the index of the keycode
-  var letterIndex = keyCodeNumber - 65; //define the index of the keycode
-  var keyChar = letters.charAt(letterIndex);
+//main game oject
+var game = {
 
-  // displayInstructions("");
+		init: function(gamemode) {
+			mode = gamemode; //globally track game mode
+			this.resetGameVars(""); //reset global variable
 
-  if (userGuess.indexOf(keyChar) === -1) { //ensure only unique guesses
-    userGuess.push(keyChar); //add letter to user guess array
-    makeKeys("reset");
+			//push subset of elements based on game mode
+			for (var i = mode.iStart; i < mode.iStop; i++) {
+				elementSubSet.push(elements[i]);
+			}
 
-    if (compareGuess(keyChar)) { //compare to chosen element string
-      displayElement(0);
-      makeKeys("reset");
+			minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+ 			arena.closeCover(); //close the cover
+			this.genElement(); //generate first element
+		},
 
-      if (elementString.length === 0) { //check if won
-        wins++;
-        stopGame = true;
-        shiftElements(true);
-        updateWinGauge();
+		genElement: function() {
+			if (stopGame && !gameOver) {
+				this.resetGenVars();
 
-        //check if anymore elements
-        if (elementSubSet.length === 0) {
-          gameOver = true;
-          openCover("win");
-        }
-        else {
-          displayInstructions("Hit Spacebar or Click on Element");
-          meowSound.play();
-        }
+				//based on random pick save info of element
+				elementIndex = tools.getRandom(elementSubSet.length);
+				iElement = elementSubSet[elementIndex];
+				elementString = iElement.name;
 
-      }
-    }
-    else {
-      if ((userGuess.length - correctGuess.length) === maxAttempts) {
-        losses++;
-        overLosses++;
-        stopGame = true;
-        updateLossGauge();
-        updateWinGauge();
-        displayElement(1);
-        shiftElements(false);
+				lett.makeKeys(); //display keys
+				elem.displaySymbol(); //display symbol
+				elem.displayGuess(); //display guess
+				gauge.updateLett();
+			}
+		},
 
-        //check if reached max losses
-        if (losses === maxLosses) {
-          gameOver = true;
-          // displayInstructions("");
-          openCover(collapseWfn());
-        }
-        else if (elementSubSet.length === 0) {
-          gameOver = true;
-          // displayInstructions("");
-          openCover("win");
-        }
-        else {
-          clonkSound.play();
-          displayInstructions("Hit Spacebar or Click on Element");
-        }
+		update: function(keyCodeNum) {
+			var letterIndex = keyCodeNum - 65; //define the index of the keycode
+  		var keyChar = letters.charAt(letterIndex);
 
-      }
-      else {
-      displayElement(0);
-      }
-    }
-  }
-  else {
-    // displayInstructions(keyChar.toUpperCase() + " already used.");
-  }
+  		if (userGuess.indexOf(keyChar) === -1) { //ensure only unique guesses
+    		userGuess.push(keyChar); //add letter to user guess array
 
-  updateLettGauge();
-  }
-}
+    		if (iElement.name.match(keyChar)) { //compare to chosen element string
+    			correctGuess.push(keyChar);
+    			elementString = elementString.replace(new RegExp(keyChar, 'g'), "");
+		      elem.displayGuess();
+		      lett.makeKeys();
 
-function makeKeys(status) {
-  updateLettGauge();
+		      if (elementString.length === 0) { //check if won
+        		this.guessResult("win");
 
-  var lettPick = document.getElementById("lett_pick");
-  lettPick.style.display = "flex";
-  lettPick.innerHTML = "";
+        		//check if anymore elements
+        		if (elementSubSet.length === 0) {
+          		gameOver = true;
+          		arena.openCover("alive");
+        		}
+        		else {
+          		lett.instructions("Hit Spacebar or Click on Element");
+          		meowSound.play();
+        		}
+		   	  }
+		  	}
 
-  if (status === "reset") {
-    var keyCodeNum;
+		  	else {
+		      lett.makeKeys();
 
-    for (var i = 0; i < letters.length; i++) {
-      //for each letter make a div
-      keyCodeNum = i + 65;
-      // lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")';>" + letters[i].toUpperCase() + "</div>";
-      lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")';></div>";
-      var lettPickX = document.getElementById("lett" + i);
-      lettPickX.innerHTML = letters[i].toUpperCase();
+		      if ((userGuess.length - correctGuess.length) === mode.maxAttempt) {
+		      	this.guessResult("loss");
 
-      for (var j = 0; j < userGuess.length; j++) {
+		        //check if reached max losses
+		       	if (elementSubSet.length === 0) {
+		          gameOver = true;
+		          // if (loss === minLoss) {
+		          if (lossPercent === 100) {
+		          	arena.openCover("dead");
+		          }
+		          else {
+		          	arena.openCover("alive");
+		       		}
+		        }
+		        // else if (loss === minLoss) {
+		        else if (lossPercent === 100) {
+		          gameOver = true;
+		          arena.openCover(game.collapseWfn());
+		        }
+		        else {
+		          clonkSound.play();
+		          lett.instructions("Hit Spacebar or Click on Element");
+		        }
+		      }
+		  	}
+		  }
+		},
 
-        if (letters[i] === userGuess[j]) {
-          if (correctGuess.indexOf(userGuess[j]) === -1) { //wrong guess
-            lettPickX.innerHTML += "<div id='xout" + j + "'>X</div>";
+		resetGameVars: function(status) {
+			aliveSong.pause();
+			aliveSong.currentTime = 0;
+			deadSong.pause();
+			deadSong.currentTime = 0;
 
-            var xout = document.getElementById("xout" + j);
-            xout.style.color = "red";
-            xout.style.position = "absolute";
-            xout.style.top = "0px";
-            xout.style.fontFamily = "'Julee', cursive";
-          }
-          // else { //correct guess
-          lettPickX.style.color = "lightgrey";
-          // }
-        }
+			userGuess = [];
+			correctGuess = [];
+			stopGame = true;
+			loss = 0;
+			lossPercent = 0;
+			gameOver = false;
 
-      }
-    }
+			if (status === "cont") {
+				arena.closeCover();
+				minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+				gauge.updateLoss();
+				this.genElement();
+			}
 
-  }
-}
+			else {
+				overLoss = 0;
+				win = 0;
+				elementSubSet = [];
+				elementPastSet = [];
+				iElement = "";
+				elementIndex = -1;
 
-//Game initiation, reset variables and pick an element
-function initiateGame(mode) {
+				if (status === "alive" || status === "dead") {
+					elem.clearAll();
+	        elem.printList();
+	        lett.clearKeys();
+	        gauge.clearAll();
+	        arena.restoreModeSel();
+				}
+			}
+		},
 
-  //reset all variables
-  wins = 0;
-  losses = 0;
-  overLosses = 0;
-  elementSubSet = [];
-  elementPastSet = [];
-  userGuess = []; 
-  correctGuess = [];
-  elementString = "";
-  stopGame = false;
-  elementIndex = -1;
-  elementGen = "";
-  toggleSymbol = true;
+		resetGenVars: function() {
+			userGuess = [];
+			correctGuess = [];
+			stopGame = false;
+		},
 
-  if (mode === 3) { //atomic mode uses atomic numbers
-  	toggleSymbol = false;
-  }
-  else {
-  	toggleSymbol = true;
-  }
+		guessResult: function(result) {
+			if (result === "win") {
+				win++;
+				lossPercent = Math.max((lossPercent - mode.winAward), 0);
+        elementPastSet.push([iElement, true]); 
+			}
+			else {
+				loss++;
+        overLoss++;
+        lossPercent = Math.min((lossPercent + mode.lossPenalty), 100);
+    		elementPastSet.push([iElement, false]);
+			}
 
-  //push subset of elementList into elements
-  for (var i = 0; i < gameMode[mode][0]; i++) {
-  	elementSubSet.push(elements[i]);
-  }
+			//remove element from sub set
+			elementSubSet.splice(elementIndex, 1);
 
-  maxWins = elementSubSet.length;
+			stopGame = true;
+      elem.displayGuess();
+  		gauge.updateWin();
+  		gauge.updateLoss();
+  		elem.printList();
+  		arena.updateCover();
+		},
 
-  //display to arena cover
-  var coverInfoText1 = document.getElementById("cover_info_text1");
-  var coverInfoText2 = document.getElementById("cover_info_text2");
-  coverInfoText1.innerHTML = gameMode[mode][1];
-  coverInfoText1.style.color = gameMode[mode][2];
-  coverInfoText2.innerHTML = gameMode[mode][0];
+		collapseWfn: function() {
+			var wfn = Math.floor(Math.random() * 10);
+			if (wfn < 5) {
+				return "cont";
+			}
+			return "dead";			
+		}
+};
 
-  if (closeCover()) {
-    genElement();
-  }
-}
+//oject to handle displays of element
+var elem = {
 
-function genElement() {
-  //Reset variables
-  userGuess = [];
-  correctGuess = [];
-  elementString = "";
-  stopGame = false;
-  makeKeys("reset");
+		displaySymbol: function() {
+		  var elemGenText = document.getElementById("elem_gen_text");
+			if (mode.display === "symbol") {
+			  elemGenText.innerHTML = iElement.symbol;
+			}
+			else {
+			  elemGenText.innerHTML = iElement.number;
+			}
+		},
 
-  //random generation of element in sub set
-  elementIndex = Math.floor(Math.random() * elementSubSet.length);
-  elementString = elementSubSet[elementIndex].name; //save element string
-  elementGen = elementSubSet[elementIndex]; //save element object
+		displayGuess: function() {
+  		var elemGuessText = document.getElementById("elem_guess_text");
 
-  //Display atomic symbol to screen
-  var elemGenText = document.getElementById("elem_gen_text");
-  if (toggleSymbol) {
-    elemGenText.innerHTML = elementGen.symbol;
-  }
-  else {
-    elemGenText.innerHTML = elementGen.number;
-  }
-
-  displayElement(0);
-  return elementIndex;
-}
-
-function clickElemGen() {
-  if (stopGame && !gameOver) {
-    genElement();
-    updateLettGauge();
-    // displayInstructions("");
-    stopGame = false;
-    makeKeys("reset");
-  }
-}
-
-function displayElement(status) {
-  var elemGuessText = document.getElementById("elem_guess_text");
-
-  blankedText = "";
-  elemGuessText.style.color = "black";
+  		blankedText = "";
+  		elemGuessText.style.color = "black";
   
-  if (status === 0) {
-    if (correctGuess.length === 0) {
-      for (var i = 0; i < elementGen.name.length; i++) {
-        blankedText += "_ ";
-      }
-    }
+		  if ((userGuess.length - correctGuess.length) === mode.maxAttempt) {
+				for (var i = 0; i < iElement.name.length; i++) {
+		      blankedText += iElement.name[i].toUpperCase() + " ";
+		    }
+		    elemGuessText.style.color = "red";
+			}
 
-    else {
-      for (var i = 0; i < elementGen.name.length; i++) {
-        for (var j = 0; j < correctGuess.length; j++) {
-          if (elementGen.name[i] === correctGuess[j]) {
-            blankedText += correctGuess[j].toUpperCase() + " ";
-            break;
-          }
-          if (j == correctGuess.length - 1) {
-            blankedText += "_ ";
-          }
-        }
-      }
-    }
-  }
-  else {
-    for (var i = 0; i < elementGen.name.length; i++) {
-      blankedText += elementGen.name[i].toUpperCase() + " ";
-    }
-    elemGuessText.style.color = "red"; 
-  }
+			else {
+		    if (correctGuess.length === 0) {
+		      for (var i = 0; i < iElement.name.length; i++) {
+		        blankedText += "_ ";
+		      }
+		    }
+		    else {
+		      for (var i = 0; i < iElement.name.length; i++) {
+		        for (var j = 0; j < correctGuess.length; j++) {
+		          if (iElement.name[i] === correctGuess[j]) {
+		            blankedText += correctGuess[j].toUpperCase() + " ";
+		            break;
+		          }
+		          if (j == correctGuess.length - 1) {
+		            blankedText += "_ ";
+		          }
+		        }
+		      }
+		    }
+		  }
+		  elemGuessText.innerHTML = blankedText;
+		},
 
-  elemGuessText.innerHTML = blankedText;
-}
+		printList: function() {
+			var solvListItems = document.getElementById("cid_list_items");
+			solvListItems.innerHTML = "";
 
-function updateLettGauge() {
-  var guessChars = "";
-  var lettGauge = document.getElementById("lett_gauge");
-  var guessPercent = 100 - (((userGuess.length - correctGuess.length) / maxAttempts) * 100);
-  var guessStringPercent = guessPercent + '%';
+			var symOrNum;
 
-  lettGauge.style.width = guessStringPercent;
-}
+			for (var i = 0; i < elementPastSet.length; i++) {
+				if (mode.display === "symbol") {
+					symOrNum = elementPastSet[i][0].symbol;
+				}
+				else {
+					symOrNum = elementPastSet[i][0].number;
+				}
+				if (elementPastSet[i][1] === false) { //guessed incorrectly
+					solvListItems.innerHTML += "<a href=" 
+				                         + elementPastSet[i][0].wiki 
+				                         + " target='_blank' class='list-group-item list-group-item-danger'>"
+				                         + symOrNum + ":" 
+				                         + tools.capFirst(elementPastSet[i][0].name) + "</a>";
+				}
+				else {
+					solvListItems.innerHTML += "<a href=" 
+				                         + elementPastSet[i][0].wiki 
+				                         + " target='_blank' class='list-group-item'>"
+				                         + symOrNum + ":" 
+				                         + tools.capFirst(elementPastSet[i][0].name) + "</a>";
+				}
+			}
+		},
 
-function compareGuess(lett) {
-  if (elementGen.name.match(lett)) {
-    correctGuess.push(lett); //push letter to correct guess array
-    elementString = elementString.replace(new RegExp(lett, 'g'), "");
-    return true;
-  }
-  return false;
-}
+		clearAll: function() {
+			var elemGenText = document.getElementById("elem_gen_text");
+			var elemGuessText = document.getElementById("elem_guess_text");
 
-//randomizer to determine death of cat
-function collapseWfn() {
-	var wfn = Math.floor(Math.random() * 10);
-	if (wfn < 5) {
-		return "lucky";
-	}
-	return "lost";
-}
-
-function updateLossGauge() {
-  var lossGauge = document.getElementById("loss_gauge");
-  var lossPercent = (losses / maxLosses) * 100;
-  var lossStringPercent = lossPercent + '%';
-  var lossInnerHTML = losses.toString() + " / " + maxLosses.toString();
-  lossGauge.style.width = lossStringPercent;
-  // lossGauge.innerHTML = lossStringPercent;
-  lossGauge.innerHTML = lossInnerHTML;
-}
-
-function updateWinGauge() {
-  var winGauge = document.getElementById("win_gauge");
-  var winPercent = (wins / (maxWins - overLosses)) * 100;
-  var winStringPercent = Math.ceil(winPercent) + '%';
-  // var winInnerHTML = wins.toString() + " / " + maxWins.toString();
-  winGauge.style.width = winStringPercent;
-  winGauge.innerHTML = winStringPercent;
-  // winGauge.innerHTML = winInnerHTML;
-}
-
-function printElements() {
-	var solvListItems = document.getElementById("cid_list_items");
-	solvListItems.innerHTML = "";
-
-	var symOrNum;
-
-	for (var i = 0; i < elementPastSet.length; i++) {
-		if (toggleSymbol) {
-			symOrNum = elementPastSet[i][0].symbol;
+			elemGuessText.innerHTML = "";
+			elemGenText.innerHTML = "";
 		}
-		else {
-			symOrNum = elementPastSet[i][0].number;
+};
+
+//display of letter gauge and instructions
+var lett = {
+		makeKeys: function() {
+		  gauge.updateLett();
+
+		  var lettPick = document.getElementById("lett_pick");
+		  lettPick.style.display = "flex";
+		  lettPick.innerHTML = "";
+
+	    var keyCodeNum;
+	    for (var i = 0; i < letters.length; i++) {
+	      //for each letter make a div
+	      keyCodeNum = i + 65;
+	      lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='game.update(" + keyCodeNum + ")';></div>";
+	      var lettPickX = document.getElementById("lett" + i);
+	      lettPickX.innerHTML = letters[i].toUpperCase();
+
+	      for (var j = 0; j < userGuess.length; j++) {
+
+	        if (letters[i] === userGuess[j]) {
+	          if (correctGuess.indexOf(userGuess[j]) === -1) { //wrong guess
+	            lettPickX.innerHTML += "<div id='xout" + j + "'>X</div>";
+
+	            var xout = document.getElementById("xout" + j);
+	            xout.style.color = "red";
+	            xout.style.position = "absolute";
+	            xout.style.top = "0px";
+	            xout.style.fontFamily = "'Julee', cursive";
+	          }
+	          lettPickX.style.color = "lightgrey";
+	        }
+	      }
+	    }
+		},
+
+		clearKeys: function() {
+			gauge.updateLett();
+
+		  var lettPick = document.getElementById("lett_pick");
+		  lettPick.style.display = "flex";
+		  lettPick.innerHTML = ""
+		},
+
+		instructions: function(instr) {
+			var lettInstr = document.getElementById("lett_pick");
+			lettInstr.innerHTML = instr;
+		  lettInstr.style.display = "block";
+		  lettInstr.style.visibility = "visible";
 		}
 
-		if (elementPastSet[i][1] === false) { //guessed incorrectly
-			solvListItems.innerHTML += "<a href=" 
-		                         + elementPastSet[i][0].wiki 
-		                         + " target='_blank' class='list-group-item list-group-item-danger'>"
-		                         + symOrNum + ":" 
-		                         + capFirst(elementPastSet[i][0].name) + "</a>";
+};
+
+//handles win and loss gauges
+var gauge = {
+		updateWin: function() {
+		  var winGauge = document.getElementById("win_gauge");
+		  // var winPercent = (win / (mode.maxWins - overLoss)) * 100;
+		  var winPercent = (win / (mode.iStop - overLoss)) * 100;
+		  var winStringPercent = Math.ceil(winPercent) + '%';
+		  winGauge.style.width = winStringPercent;
+		  winGauge.innerHTML = winStringPercent;
+		},
+
+		updateLoss: function() { 
+			//need to use min of remaining and maxLoss
+		  var lossGauge = document.getElementById("loss_gauge");
+		  // var lossPercent = (loss / minLoss) * 100;
+		  var lossStringPercent = lossPercent + '%';
+		  // var lossInnerHTML = loss.toString() + " / " + minLoss.toString();
+		  var lossInnerHTML = lossStringPercent;
+		  lossGauge.style.width = lossStringPercent;
+		  lossGauge.innerHTML = lossInnerHTML;
+		},
+
+		updateLett: function() {
+		  var lettGauge = document.getElementById("lett_gauge");
+		  var guessPercent = 100 - (((userGuess.length - correctGuess.length) / mode.maxAttempt) * 100);
+		  var guessStringPercent = guessPercent + '%';
+		  lettGauge.style.width = guessStringPercent;
+		},
+
+		clearAll: function() {
+		  var winGauge = document.getElementById("win_gauge");
+		  var lossGauge = document.getElementById("loss_gauge");
+		  var lettGauge = document.getElementById("lett_gauge");
+		  var lettGaugePercent = '0%';	
+		  var lossGaugePercent = '0%';
+		  var winGaugePercent = '0%';
+		  lettGauge.innerHTML = "";
+		  lossGauge.innerHTML = "";
+		  winGauge.innerHTML = "";
+		  lettGauge.style.width = lettGaugePercent;
+		  lossGauge.style.width = lossGaugePercent;
+		  winGauge.style.width = winGaugePercent;
 		}
-		else {
-			solvListItems.innerHTML += "<a href=" 
-		                         + elementPastSet[i][0].wiki 
-		                         + " target='_blank' class='list-group-item'>"
-		                         + symOrNum + ":" 
-		                         + capFirst(elementPastSet[i][0].name) + "</a>";
+};
+
+var arena = {
+
+		closeCover: function() {
+			var solvArenaMode = document.getElementById("cid_arena_mode")
+		  solvArenaMode.style.visibility = "hidden";
+			
+			var solvArenaCover = document.getElementById("cid_arena_cover");
+			solvArenaCover.classList.remove('open-animate');
+			solvArenaCover.classList.add('cover-animate');
+
+			//display to arena cover
+		  var coverInfoText1 = document.getElementById("cover_info_text1");
+		  coverInfoText1.innerHTML = mode.desig;
+		  coverInfoText1.style.color = mode.color;
+
+		  this.updateCover();
+		},
+
+		openCover: function(status) {
+			//remove schrodinger background
+			var cidArena = document.getElementById("cid_arena");
+		  cidArena.style.backgroundImage = "none";
+
+			//depending on win or loss display different text and gifs
+			var arenaResultGif = document.getElementById("arena_result_gif");
+			var resultInfoText = document.getElementById("result_info_text");
+		  var resultInfoBtn = document.getElementById("result_info_btn");
+
+			if (status === "dead") {
+		    deadSong.play();
+				arenaResultGif.src = deadResult.gif;
+				resultInfoText.innerHTML = deadResult.comment;
+		    resultInfoBtn.innerHTML = "Replay?"
+		    resultInfoBtn.value = deadResult.desig;
+			}
+			else if (status === "cont") {
+				arenaResultGif.src = contResult.gif;
+				resultInfoText.innerHTML = contResult.comment;
+		    resultInfoBtn.innerHTML = "Continue?"
+		    resultInfoBtn.value = contResult.desig;
+			}
+			else { //this is a overall win
+		    aliveSong.play();
+				arenaResultGif.src = aliveResult.gif;
+				resultInfoText.innerHTML = aliveResult.comment;
+		    resultInfoBtn.innerHTML = "Replay?"
+		    resultInfoBtn.value = aliveResult.desig;
+			}
+
+			//animate opening of cover
+			document.getElementById("cid_arena_mode").style.visibility = "hidden";
+			var cidArenaCover = document.getElementById("cid_arena_cover");
+			cidArenaCover.classList.remove('close-animate');
+			cidArenaCover.classList.add('open-animate');
+
+			//display background-content box
+			var cidArenaResult = document.getElementById("cid_arena_result");
+			cidArenaResult.style.visibility = "visible";
+		},
+
+		updateCover: function() {
+			//decrease remaining element
+		  var coverInfoText2 = document.getElementById("cover_info_text2");
+			coverInfoText2.innerHTML = elementSubSet.length;
+		},
+
+		restoreModeSel: function() {
+			//hide gif
+			var cidArenaResult = document.getElementById("cid_arena_result");
+			cidArenaResult.style.visibility = "hidden";
+
+			//replace schrodinger background
+			var cidArena = document.getElementById("cid_arena");
+			cidArena.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
+
+			//show mode selection
+			var cidArenaMode = document.getElementById("cid_arena_mode");
+			cidArenaMode.style.visibility = "visible";
 		}
-	}
+};
 
-	//decrease remaining element
-  var coverInfoText2 = document.getElementById("cover_info_text2");
-	coverInfoText2.innerHTML = elementSubSet.length;
-}
 
-function capFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function shiftElements(correctGuess) {
-	//push element object into past set
-	elementPastSet.push([elementGen, correctGuess]);
-
-	//remove element from sub set
-	elementSubSet.splice(elementIndex, 1);
-
-	printElements(); //print elements to screen
-}
-
-//This is done at start of game or if cat survives
-function closeCover() {
-	var solvArenaMode = document.getElementById("cid_arena_mode")
-  solvArenaMode.style.visibility = "hidden";
-	
-	var solvArenaCover = document.getElementById("cid_arena_cover");
-	solvArenaCover.classList.remove('open-animate');
-	solvArenaCover.classList.add('cover-animate');
-
-  return true;
-}
-
-//This is done if radioactive meter reaches 100%
-function openCover(status) {
-	elementGen = ""; //make sure keyboard cannot be used
-
-	//remove schrodinger background
-	var solvArena = document.getElementById("cid_arena");
-  solvArena.style.backgroundImage = "none";
-	// solvArena.style.visibility = "hidden";
-
-	//depending on win or loss display different text and gifs
-	var arenaResultGif = document.getElementById("arena_result_gif");
-	var resultInfoText = document.getElementById("result_info_text");
-  var resultInfoBtn = document.getElementById("result_info_btn");
-
-	if (status === "lost") {
-    funeralSong.play();
-		arenaResultGif.src = deathGif;
-		resultInfoText.innerHTML = deathComment;
-    resultInfoBtn.innerHTML = "Replay?"
-    resultInfoBtn.value = 0;
-	}
-	else if (status === "lucky") {
-		arenaResultGif.src = luckGif;
-		resultInfoText.innerHTML = luckComment;
-    resultInfoBtn.innerHTML = "Continue?"
-    resultInfoBtn.value = 1;
-	}
-	else { //this is a overall win
-    periodicSong.play();
-		arenaResultGif.src = winGif;
-		resultInfoText.innerHTML = winComment;
-    resultInfoBtn.innerHTML = "Replay?"
-    resultInfoBtn.value = 0;
-	}
-
-	//animate opening of cover
-	document.getElementById("cid_arena_mode").style.visibility = "hidden";
-	var solvArenaCover = document.getElementById("cid_arena_cover");
-	solvArenaCover.classList.remove('close-animate');
-	solvArenaCover.classList.add('open-animate');
-
-	//display background-content box
-	var solvArenaResult = document.getElementById("cid_arena_result");
-	solvArenaResult.style.visibility = "visible";
-}
-
-function displayInstructions(instr) {
-	var lettInstr = document.getElementById("lett_pick");
-	lettInstr.innerHTML = instr;
-  lettInstr.style.display = "block";
-  lettInstr.style.visibility = "visible";
-}
-
-function resetGame(val) {
-  periodicSong.pause();
-  funeralSong.pause();
-
-	//hide gif
-	var solvArenaResult = document.getElementById("cid_arena_result");
-	solvArenaResult.style.visibility = "hidden";
-
-	//replace schrodinger background
-	var solvArena = document.getElementById("cid_arena");
-	solvArena.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
-
-	//show mode selection
-	var solvArenaMode = document.getElementById("cid_arena_mode");
-	solvArenaMode.style.visibility = "visible";
-
-  //remove guess element
-  var elemGuessText = document.getElementById("elem_guess_text");
-  elemGuessText.innerHTML = "";
-
-  //remove symbol
-  var elemGenText = document.getElementById("elem_gen_text");
-  elemGenText.innerHTML = "";
-
-  losses = 0;
-  userGuess = [];
-  correctGuess = [];
-  makeKeys("clear");
-
-  var winGauge = document.getElementById("win_gauge");
-  var lossGauge = document.getElementById("loss_gauge");
-  var lettGauge = document.getElementById("lett_gauge");
-  var guessStringPercent = '0%';
-
-  //reset game
-  if (val === "0") { 
-  	//remove elements in list
-  	elementPastSet = [];
-  	printElements();
-    elementIndex = -1
-    wins = 0;
-    overLosses = 0;
-    winGauge.innerHTML = "";
-  }
-  //continue game
-  else {
-    closeCover();
-    genElement();
-    // displayInstructions("");
-    stopGame = false;
-    guessStringPercent = '100%';
-  }
-
-  stopGame = false;
-  gameOver = false;
-  updateLossGauge();
-  updateWinGauge();
-  updateLettGauge();
-
-  lossGauge.innerHTML = "";
-  lettGauge.style.width = guessStringPercent;
-}

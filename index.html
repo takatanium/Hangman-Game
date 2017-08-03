@@ -31,10 +31,10 @@
 
 				<div class="cid-arena-mode" id="cid_arena_mode">
           <p>Choose Difficulty</p>
-          <button type="button" class="btn btn-info" onclick="initiateGame(0);">Easy</button>
-          <button type="button" class="btn btn-warning" onclick="initiateGame(1);">Mid</button>
-          <button type="button" class="btn btn-danger" onclick="initiateGame(2);">Hard</button>
-          <button type="button" class="btn btn-success" onclick="initiateGame(3);">Atomic</button>
+          <button type="button" class="btn btn-info" onclick="game.init(gameMode[0]);">Easy</button>
+          <button type="button" class="btn btn-warning" onclick="game.init(gameMode[1]);">Mid</button>
+          <button type="button" class="btn btn-danger" onclick="game.init(gameMode[2]);">Hard</button>
+          <button type="button" class="btn btn-success" onclick="game.init(gameMode[3]);">Atomic</button>
         </div>
 
         <div class="cid-arena-cover" id="cid_arena_cover">
@@ -50,7 +50,7 @@
           <iframe src="" width="400px" height="232px" frameBorder="0" id="arena_result_gif" class="giphy-embed arena-result-gif"></iframe>
           <div class="arena-result-info">
             <p class="result-info-text" id="result_info_text"></p>
-            <button type="button" class="btn btn-warning result-info-btn" id="result_info_btn" onclick="resetGame(this.value);"></button>
+            <button type="button" class="btn btn-warning result-info-btn" id="result_info_btn" onclick="game.resetGameVars(this.value);"></button>
           </div>
         </div>
 
@@ -67,17 +67,17 @@
 			<div class="progress">
 	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated win-gauge" id="win_gauge"></div>
 	    </div>
-			<img src="assets/images/cat-icon2.png" class="win-icon" alt="Cat Logo">
+			<img src="assets/images/cat-icon2.png" class="win-icon" alt="Cat Logo" onclick="meowSound.play();" title="Win Gauge">
 		</div>
 
 		<div class="loss auto-margin">
 			<div class="progress">
 	      <div class="progress-bar progress-bar-danger progress-bar-striped progress-bar-animated loss-gauge" id="loss_gauge"></div>
 	    </div>
-			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo">
+			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo" onclick="clonkSound.play();" title="Loss Gauge"">
 		</div>
 
-		<div class="elem auto-margin" onclick="clickElemGen();">
+		<div class="elem auto-margin" onclick="game.genElement();">
 			<div class="elem-gen internal-box">
 				<div class="elem-gen-text" id="elem_gen_text"></div>
 				<h3>Name Element</h3>
