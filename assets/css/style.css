@@ -441,6 +441,8 @@ p {
 
 .flip-container {
   perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
 }
 
 .animate-flip {
