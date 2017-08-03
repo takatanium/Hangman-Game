@@ -85,7 +85,8 @@ var aliveResult = {
 
 var deadResult = {
 		desig:"dead", 
-		comment:"Game Over...", 
+		// comment:"Game Over...", 
+		comment:"Playing dead?", 
 		gif:"https://giphy.com/embed/ZWZMwJtoqAzxS",
 };
 
@@ -94,6 +95,12 @@ var contResult = {
 		comment:"Lucky kitty!", 
 		gif:"https://giphy.com/embed/fliBUx4ZFB6HS",
 };
+
+//outcomes for death
+var outcome75 = [[1,1,1,0], [1,1,0,1], [1,0,1,1], [0,1,1,1]];
+var outcome50 = [[1,1,0,0], [1,0,0,1], [1,0,1,0], [0,1,0,1], [0,0,1,1]];
+var outcome25 = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]];
+var wfnArray;
 
 //Reset at start of new game
 var overLoss; //running number of overall losses 
@@ -130,11 +137,14 @@ document.addEventListener('keyup', function(event) {
   //generate new element on spacebar
   else if (stopGame && !gameOver && event.keyCode === 32 ) {
     game.genElement();
+    console.log(stopGame);
   }
   //in game play
   else if (!stopGame && event.keyCode >= 65 && event.keyCode <= 90) {
   	game.update(event.keyCode);
   }
+  console.log("stopGame: "+ stopGame);
+  console.log("gameOver: "+ stopGame);
 });
 
 //main game oject
@@ -149,12 +159,13 @@ var game = {
 				elementSubSet.push(elements[i]);
 			}
 
-			minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+			minLoss = Math.max(mode.lossPenalty, ((1/elementSubSet.length)*100)); //determine the mininimum amount of losses
  			arena.closeCover(); //close the cover
 			this.genElement(); //generate first element
 		},
 
 		genElement: function() {
+			console.log("Try generation");
 			if (stopGame && !gameOver) {
 				this.resetGenVars();
 
@@ -162,11 +173,15 @@ var game = {
 				elementIndex = tools.getRandom(elementSubSet.length);
 				iElement = elementSubSet[elementIndex];
 				elementString = iElement.name;
+				console.log("Successful generation");
 
 				lett.makeKeys(); //display keys
 				elem.displaySymbol(); //display symbol
 				elem.displayGuess(); //display guess
 				gauge.updateLett();
+
+				//choose an array for outcomes
+				wfnArray = outcome50[tools.getRandom(5)];
 			}
 		},
 
@@ -198,7 +213,7 @@ var game = {
 		   	  }
 		  	}
 
-		  	else {
+		  	else {		  		
 		      lett.makeKeys();
 
 		      if ((userGuess.length - correctGuess.length) === mode.maxAttempt) {
@@ -218,7 +233,8 @@ var game = {
 		        // else if (loss === minLoss) {
 		        else if (lossPercent === 100) {
 		          gameOver = true;
-		          arena.openCover(game.collapseWfn());
+		          // arena.openCover(game.collapseWfn());
+		          arena.displayCards();
 		        }
 		        else {
 		          clonkSound.play();
@@ -244,7 +260,8 @@ var game = {
 
 			if (status === "cont") {
 				arena.closeCover();
-				minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+				minLoss = Math.max(mode.lossPenalty, ((1/elementSubSet.length)*100)); //determine the mininimum amount of losses
+				// minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
 				gauge.updateLoss();
 				this.genElement();
 			}
@@ -282,7 +299,8 @@ var game = {
 			else {
 				loss++;
         overLoss++;
-        lossPercent = Math.min((lossPercent + mode.lossPenalty), 100);
+        lossPercent = Math.min((lossPercent + minLoss), 100);
+
     		elementPastSet.push([iElement, false]);
 			}
 
@@ -299,7 +317,7 @@ var game = {
 
 		collapseWfn: function() {
 			var wfn = Math.floor(Math.random() * 10);
-			if (wfn < 5) {
+			if (wfn < 8) {
 				return "cont";
 			}
 			return "dead";			
@@ -494,12 +512,17 @@ var gauge = {
 var arena = {
 
 		closeCover: function() {
-			var solvArenaMode = document.getElementById("cid_arena_mode")
-		  solvArenaMode.style.visibility = "hidden";
-			
-			var solvArenaCover = document.getElementById("cid_arena_cover");
-			solvArenaCover.classList.remove('open-animate');
-			solvArenaCover.classList.add('cover-animate');
+			var coverCardBox = document.getElementById("cover_card_box");
+			coverCardBox.innerHTML = "";
+
+			var cidArenaMode = document.getElementById("cid_arena_mode")
+			var arenaCoverInfo = document.getElementById("arena_cover_info");
+		  cidArenaMode.style.visibility = "hidden";
+			arenaCoverInfo.style.visibility = "visible";
+
+			var cidArenaCover = document.getElementById("cid_arena_cover");
+			cidArenaCover.classList.remove('open-animate');
+			cidArenaCover.classList.add('cover-animate');
 
 			//display to arena cover
 		  var coverInfoText1 = document.getElementById("cover_info_text1");
@@ -529,8 +552,10 @@ var arena = {
 			else if (status === "cont") {
 				arenaResultGif.src = contResult.gif;
 				resultInfoText.innerHTML = contResult.comment;
-		    resultInfoBtn.innerHTML = "Continue?"
-		    resultInfoBtn.value = contResult.desig;
+		    // resultInfoBtn.innerHTML = "Continue?";
+		    resultInfoBtn.innerHTML = "Replay?";
+		    // resultInfoBtn.value = contResult.desig;
+		    resultInfoBtn.value = deadResult.desig;
 			}
 			else { //this is a overall win
 		    aliveSong.play();
@@ -549,6 +574,8 @@ var arena = {
 			//display background-content box
 			var cidArenaResult = document.getElementById("cid_arena_result");
 			cidArenaResult.style.visibility = "visible";
+
+			lett.instructions("");
 		},
 
 		updateCover: function() {
@@ -569,6 +596,109 @@ var arena = {
 			//show mode selection
 			var cidArenaMode = document.getElementById("cid_arena_mode");
 			cidArenaMode.style.visibility = "visible";
+		},
+
+		displayCards: function() {
+			var arenaCoverInfo = document.getElementById("arena_cover_info");
+			var coverCardBox = document.getElementById("cover_card_box");
+
+			var imgHTML = "<img src='assets/images/cat-icon2.png' class='card_alive_img'>";
+
+			var topImg = "";
+			var leftImg = "";
+			var rightImg = "";
+			var botImg = "";
+
+			if (wfnArray[0]===1) {topImg=imgHTML;}
+			if (wfnArray[1]===1) {leftImg = imgHTML;}
+			if (wfnArray[2]===1) {rightImg = imgHTML;}
+			if (wfnArray[3]===1) {botImg = imgHTML;}
+			
+
+			// coverCardBox.style.visibility = "visible";
+			arenaCoverInfo.style.visibility = "hidden";
+			lett.instructions("Find the cat! Pick a card.");
+
+			//Change this to actual DOM manipulations...
+			coverCardBox.innerHTML = "<div class='card-row' id='card_row_top'>"
+      												 // + "<div class='flip-container' onclick='arena.flipCards();'>"
+      												 + "<div class='flip-container' id='top' onclick='arena.flipCards(this.id);'>"
+														   + "<div class='flipper card' id='card_top_center'>"
+															 + "<div class='front'>?</div>"
+															 + "<div class='back'>"+topImg+"</div>"
+															 + "</div></div></div>"
+      												 + "<div class='card-row' id='card-row_middle'>"
+															 +	"<div class='flip-container' id='left' onclick='arena.flipCards(this.id);'>"
+															 // +	"<div class='flip-container' onclick='arena.flipCards('"+leftResult+"');'>"
+															 +	"<div class='flipper card' id='card_middle_left'>"
+															 +	"<div class='front'>?</div>"
+															 +	"<div class='back'>"+leftImg+"</div>"
+															 +	"</div></div>"
+															 +	"<div class='flip-container' id='right' onclick='arena.flipCards(this.id);'>"
+															 // +	"<div class='flip-container' onclick='arena.flipCards('"+rightResult+"');'>"
+															 +	"<div class='flipper card' id='card_middle_right'>"
+															 +	"<div class='front'>?</div>"
+															 +	"<div class='back'>"+rightImg+"</div>"
+															 +	"</div></div></div>"
+      												 + "<div class='card-row' id='card_row_bottom'>"
+      												 + "<div class='flip-container' id='bot' onclick='arena.flipCards(this.id);'>"
+      												 // + "<div class='flip-container' onclick='arena.flipCards('"+botResult+"');'>"
+															 +	"<div class='flipper card' id='card_bottom_center'>"
+															 +	"<div class='front'>?</div>"
+															 +	"<div class='back'>"+botImg+"</div>"
+															 +	"</div></div></div>";
+
+		},
+
+		flipCards: function(cardSel) {
+			var cardTop = document.getElementById("card_top_center");
+			var cardLeft = document.getElementById("card_middle_left");
+			var cardRight = document.getElementById("card_middle_right");
+			var cardBottom = document.getElementById("card_bottom_center");
+			cardTop.classList.add('animate-flip');
+			cardLeft.classList.add('animate-flip');
+			cardRight.classList.add('animate-flip');
+			cardBottom.classList.add('animate-flip');
+
+			var result;
+			if (cardSel === "top") {
+				cardTop.style.boxShadow = "0px 10px 50px green";
+				if (wfnArray[0] === 1) {
+					result = "cont";
+				}
+				else {
+					result = "dead";
+				}
+			}
+			else if (cardSel === "left") {
+				cardLeft.style.boxShadow = "0px 10px 50px green";
+				if (wfnArray[1] === 1) {
+					result = "cont";
+				}
+				else {
+					result = "dead";
+				}
+			}
+			else if (cardSel === "right") {
+				cardRight.style.boxShadow = "0px 10px 50px green";
+				if (wfnArray[2] === 1) {
+					result = "cont";
+				}
+				else {
+					result = "dead";
+				}
+			}
+			else {
+				cardBottom.style.boxShadow = "0px 10px 50px green";
+				if (wfnArray[3] === 1) {
+					result = "cont";
+				}
+				else {
+					result = "dead";
+				}
+			}
+			
+			arena.openCover(result);
 		}
 };
 

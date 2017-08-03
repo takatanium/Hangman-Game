@@ -39,18 +39,18 @@
 
         <div class="cid-arena-cover" id="cid_arena_cover">
           <img src="assets/images/cover-sticker.jpg" class="arena-cover-img" id="arena_cover_img" alt="Metal Cover"> 
+
           <div class="arena-cover-info" id="arena_cover_info">
             <p class="cover-info-text1">Mode: <span id="cover_info_text1"></span></p>
-            <!-- <p class="cover-info-text2">Remaining: <span id="cover_info_text2"></span></p> -->
+            <p class="cover-info-text2">Elements Remaining: <span id="cover_info_text2"></span></p>
           </div>
-          <div class="cover-info-text3" id="cover_info_text3">Elements Remaining: 
-						<span id="cover_info_text2"></span>
-          </div>
+
+          <div class="cover-card-box" id="cover_card_box"></div> 
         </div>
 
 				<div class="cid-arena-result" id="cid_arena_result">
           <iframe src="" width="400px" height="232px" frameBorder="0" id="arena_result_gif" class="giphy-embed arena-result-gif"></iframe>
-          <div class="arena-result-info">
+          <div class="arena-result-info" id="arena_result_info">
             <p class="result-info-text" id="result_info_text"></p>
             <button type="button" class="btn btn-warning result-info-btn" id="result_info_btn" onclick="game.resetGameVars(this.value);"></button>
           </div>

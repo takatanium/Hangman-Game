@@ -130,6 +130,7 @@ p {
   top: 3px;
   left: 10px;
   z-index: 6;
+  /*display: none; */
 }
 
 .cid-arena-cover {
@@ -157,9 +158,9 @@ p {
 
 .open-animate {
   height: 0;
-  animation: open-cover 2s;
-  -webkit-animation: open-cover 2s;
-  -moz-animation: open-cover 2s;
+  animation: open-cover 3s;
+  -webkit-animation: open-cover 3s;
+  -moz-animation: open-cover 3s;
 }
 
 .arena-cover-img {
@@ -178,13 +179,21 @@ p {
 }
 
 .cover-info-text1 {
+  position: relative;
+  width: 404px;
   text-align: center;
-  padding-top: 40px;
+  top: 40px;
 }
 
 .cover-info-text2 {
   text-align: center;
-  padding-top: 5px;
+  position: absolute;
+  width: 404px;
+  text-align: center;
+  bottom: 40px;
+  font-size: 25px;
+  text-shadow: 2px 2px 2px #000000;
+  color: #7FFF00;
 }
 
 .cover-info-text3 {
@@ -193,6 +202,31 @@ p {
   font-size: 25px;
   text-shadow: 2px 2px 2px #000000;
   color: #7FFF00;
+}
+
+.cover-card-box {
+  position: absolute;
+  top: 0;
+  padding-top: 4px;
+  width: 404px;
+  height: 236px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-row {
+  padding: 0px 20px 0px 20px;
+  width: 404px;
+  height: 77.33px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cover-card-box .card-row:first-child,
+.cover-card-box .card-row:last-child {
+  justify-content: space-around;
 }
 
 .cid-arena-result {
@@ -360,26 +394,35 @@ p {
 }
 
 @keyframes open-cover {
-  from {
+  0% {
     height:232px;
   }
-  to {
+  50% {
+    height: 232px;
+  }
+  100% {
     height: 0px;
   }
 }
 @-webkit-keyframes open-cover {
-  from {
+  0% {
     height:232px;
   }
-  to {
+  50% {
+    height: 232px;
+  }
+  100% {
     height: 0px;
   }
 }
 @-moz-keyframes open-cover {
-  from {
+  0% {
     height:232px;
   }
-  to {
+  50% {
+    height: 232px;
+  }
+  100% {
     height: 0px;
   }
 }
@@ -387,4 +430,79 @@ p {
 @keyframes radiate {
   from { box-shadow:0px 0px 10px 3px #7FFF00; }
   to { box-shadow:0px 0px 20px 5px #7FFF00; }
+}
+
+.card {
+  width: 110px;
+  height: 70px;
+  background-color: white;
+  box-shadow: 0em 5px 5px #333;
+}
+
+.flip-container {
+  perspective: 1000px;
+}
+
+.animate-flip {
+  transform: rotateY(180deg);
+}
+
+.flip-container, .front, .back {
+  width: 110px;
+  height: 70px;
+  cursor: pointer; 
+  cursor: hand;
+}
+
+/* flip speed goes here */
+.flipper {
+  transition: 1s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+  line-height: 70px;
+  font-size: 60px;
+
+}
+
+/* back, initially hidden pane */
+.back {
+  transform: rotateY(180deg);
+  background-color: white;
+}
+
+#card_top_center .front:first-child {
+  background-color: #5bc0de;
+}
+
+#card_middle_left .front:first-child {
+  background-color: #f0ad4e;
+}
+
+#card_middle_right .front:first-child {
+  background-color: #d9534f;
+}
+
+#card_bottom_center .front:first-child {
+  background-color: #5cb85c;
+}
+
+.card_alive_img {
+  margin-top: 10px;
+  height: 50px;
+  width: auto;
 }
