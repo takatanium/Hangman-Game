@@ -445,6 +445,8 @@ p {
 
 .animate-flip {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
 }
 
 .flip-container, .front, .back {
@@ -457,7 +459,11 @@ p {
 /* flip speed goes here */
 .flipper {
   transition: 1s;
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   position: relative;
 }
 
@@ -474,6 +480,8 @@ p {
   z-index: 2;
   /* for firefox 31 */
   transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
   line-height: 70px;
   font-size: 60px;
 
@@ -482,6 +490,8 @@ p {
 /* back, initially hidden pane */
 .back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   background-color: white;
 }
 
