@@ -62,38 +62,27 @@ gameMode.push(debugMode);
 var letters  = "abcdefghijklmnopqrstuvwxyz";
 
 //game result objects
-var winResult = {
-		desig:"Win", 
+var aliveResult = {
+		desig:"alive", 
     comment:"Awesome!", 
     gif:"https://giphy.com/embed/c7kqZMtzMLpG8",
-    audio: function() {
-    			   var song = new Audio("assets/audio/periodic-song.mp3");
-    			   song.play();
-    			 }
 };
 
-var loseResult = {
-		desig:"Lose", 
+var deadResult = {
+		desig:"dead", 
 		comment:"Game Over...", 
 		gif:"https://giphy.com/embed/ZWZMwJtoqAzxS",
-		sound: function() {
-    			   var song = new Audio("assets/audio/funeral-song.mp3");
-    			   song.play();
-    			 }
 };
 
 var contResult = {
-		desig:"Cont", 
+		desig:"cont", 
 		comment:"Lucky kitty!", 
 		gif:"https://giphy.com/embed/fliBUx4ZFB6HS",
-	  sound: function() {
-    			   // var song = new Audio("assets/audio/funeral-song.mp3");
-    			   // song.play();
-    			 }
 };
 
 //Reset at start of new game
 var overLoss; //running number of overall losses 
+var minLoss; //minimum amoutnof losses to lose
 var win; //dynamically set win counter
 var loss; //dynamically set loss counter
 var elementSubSet = []; //subset of master elements array
@@ -104,13 +93,15 @@ var mode; //game mode
 //Reset at start of element generation
 var userGuess = []; //letters that user guessed
 var correctGuess = []; //correct letters guessed
-// var elementIndex = -1; //track current index of element array
+var elementIndex = -1; //track current index of element array
 var elementString = ""; //track the current elements string
 var iElement = ""; //element generated
 var stopGame = true; //halt functions when element is shown
 
 var meowSound = new Audio("assets/audio/meow2.mp3");
 var clonkSound = new Audio("assets/audio/clonk.mp3");
+var aliveSong = new Audio("assets/audio/periodic-song.mp3");
+var deadSong = new Audio("assets/audio/funeral-song.mp3");
 
 //keyboard event listener
 document.addEventListener('keyup', function(event) {
@@ -135,28 +126,35 @@ var game = {
 
 		init: function(gamemode) {
 			mode = gamemode; //globally track game mode
-			this.resetVars(); //reset global variable
+			this.resetGameVars(""); //reset global variable
 
 			//push subset of elements based on game mode
 			for (var i = mode.iStart; i < mode.iStop; i++) {
 				elementSubSet.push(elements[i]);
 			}
 
+			minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+ 			arena.closeCover(); //close the cover
 			this.genElement(); //generate first element
 		},
 
 		genElement: function() {
-			this.resetVars();
+			if (stopGame && !gameOver) {
+				this.resetGenVars();
 
-			//based on random pick save info of element
-			iElement = elementSubSet[tools.getRandom(elementSubSet.length)];
-			elementString = iElement.name;
+				//based on random pick save info of element
+				elementIndex = tools.getRandom(elementSubSet.length);
+				iElement = elementSubSet[elementIndex];
+				elementString = iElement.name;
 
-			console.log("Generated " + elementString);
+				console.log("Generated " + elementString);
 
-			lett.makeKeys(); //display keys
-			elem.displaySymbol(); //display symbol
-			elem.displayGuess(); //display guess
+				lett.makeKeys(); //display keys
+				elem.displaySymbol(); //display symbol
+				elem.displayGuess(); //display guess
+				gauge.updateLett();
+				console.log("Here");
+			}
 		},
 
 		update: function(keyCodeNum) {
@@ -178,7 +176,7 @@ var game = {
         		//check if anymore elements
         		if (elementSubSet.length === 0) {
           		gameOver = true;
-          		// openCover("win");
+          		arena.openCover("alive");
         		}
         		else {
           		lett.instructions("Hit Spacebar or Click on Element");
@@ -194,13 +192,13 @@ var game = {
 		      	this.guessResult("loss");
 
 		        //check if reached max losses
-		        if (loss === mode.maxLoss) {
+		       	if (elementSubSet.length === 0) {
 		          gameOver = true;
-		          // openCover(collapseWfn());
+		          arena.openCover("alive");
 		        }
-		        else if (elementSubSet.length === 0) {
+		        else if (loss === mode.maxLoss) {
 		          gameOver = true;
-		          // openCover("win");
+		          arena.openCover(game.collapseWfn());
 		        }
 		        else {
 		          clonkSound.play();
@@ -211,28 +209,47 @@ var game = {
 		  }
 		},
 
-		resetVars: function() {
+		resetGameVars: function(status) {
+			aliveSong.pause();
+			aliveSong.currentTime = 0;
+			deadSong.pause();
+			deadSong.currentTime = 0;
+
+			userGuess = [];
+			correctGuess = [];
+			stopGame = true;
+			loss = 0;
+			gameOver = false;
+
+			if (status === "cont") {
+				arena.closeCover();
+				minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
+				gauge.updateLoss();
+				this.genElement();
+			}
+
+			else {
+				overLoss = 0;
+				win = 0;
+				elementSubSet = [];
+				elementPastSet = [];
+				iElement = "";
+				elementIndex = -1;
+
+				if (status === "alive" || status === "dead") {
+					elem.clearAll();
+	        elem.printList();
+	        lett.clearKeys();
+	        gauge.clearAll();
+	        arena.restoreModeSel();
+				}
+			}
+		},
+
+		resetGenVars: function() {
 			userGuess = [];
 			correctGuess = [];
 			stopGame = false;
-
-			//clear instructions
-
-			if (gameOver) {
-				overLoss = 0;
-				win = 0;
-				loss = 0;
-				elementSubSet = [];
-				elementPastSet = [];
-				gameOver = false;
-				iElement = "";
-
-				//clear keys
-				//clear all gauges
-				//clear cid list
-				//clear cid arena
-				//display cid mode selector
-			}
 		},
 
 		guessResult: function(result) {
@@ -245,11 +262,24 @@ var game = {
         overLoss++;
     		elementPastSet.push([iElement, false]);
 			}
+
+			//remove element from sub set
+			elementSubSet.splice(elementIndex, 1);
+
 			stopGame = true;
       elem.displayGuess();
   		gauge.updateWin();
   		gauge.updateLoss();
   		elem.printList();
+  		arena.updateCover();
+		},
+
+		collapseWfn: function() {
+			var wfn = Math.floor(Math.random() * 10);
+			if (wfn < 5) {
+				return "cont";
+			}
+			return "dead";			
 		}
 };
 
@@ -330,53 +360,58 @@ var elem = {
 				                         + tools.capFirst(elementPastSet[i][0].name) + "</a>";
 				}
 			}
-		  var coverInfoText2 = document.getElementById("cover_info_text2");
-			coverInfoText2.innerHTML = elementSubSet.length;
+		},
+
+		clearAll: function() {
+			var elemGenText = document.getElementById("elem_gen_text");
+			var elemGuessText = document.getElementById("elem_guess_text");
+
+			elemGuessText.innerHTML = "";
+			elemGenText.innerHTML = "";
 		}
 };
 
 //display of letter gauge and instructions
 var lett = {
 		makeKeys: function() {
-		  this.updateGauge();
+		  gauge.updateLett();
 
 		  var lettPick = document.getElementById("lett_pick");
 		  lettPick.style.display = "flex";
 		  lettPick.innerHTML = "";
 
-		  // if (status === "reset") {
-		    var keyCodeNum;
-		    for (var i = 0; i < letters.length; i++) {
-		      //for each letter make a div
-		      keyCodeNum = i + 65;
-		      lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='captureKeyEvent(" + keyCodeNum + ")';></div>";
-		      var lettPickX = document.getElementById("lett" + i);
-		      lettPickX.innerHTML = letters[i].toUpperCase();
+	    var keyCodeNum;
+	    for (var i = 0; i < letters.length; i++) {
+	      //for each letter make a div
+	      keyCodeNum = i + 65;
+	      lettPick.innerHTML += "<div class='alphabet' id='lett" + i + "' onclick='game.update(" + keyCodeNum + ")';></div>";
+	      var lettPickX = document.getElementById("lett" + i);
+	      lettPickX.innerHTML = letters[i].toUpperCase();
 
-		      for (var j = 0; j < userGuess.length; j++) {
+	      for (var j = 0; j < userGuess.length; j++) {
 
-		        if (letters[i] === userGuess[j]) {
-		          if (correctGuess.indexOf(userGuess[j]) === -1) { //wrong guess
-		            lettPickX.innerHTML += "<div id='xout" + j + "'>X</div>";
+	        if (letters[i] === userGuess[j]) {
+	          if (correctGuess.indexOf(userGuess[j]) === -1) { //wrong guess
+	            lettPickX.innerHTML += "<div id='xout" + j + "'>X</div>";
 
-		            var xout = document.getElementById("xout" + j);
-		            xout.style.color = "red";
-		            xout.style.position = "absolute";
-		            xout.style.top = "0px";
-		            xout.style.fontFamily = "'Julee', cursive";
-		          }
-		          lettPickX.style.color = "lightgrey";
-		        }
-		      }
-		    }
-		  // }
+	            var xout = document.getElementById("xout" + j);
+	            xout.style.color = "red";
+	            xout.style.position = "absolute";
+	            xout.style.top = "0px";
+	            xout.style.fontFamily = "'Julee', cursive";
+	          }
+	          lettPickX.style.color = "lightgrey";
+	        }
+	      }
+	    }
 		},
 
-		updateGauge: function() {
-		  var lettGauge = document.getElementById("lett_gauge");
-		  var guessPercent = 100 - (((userGuess.length - correctGuess.length) / mode.maxAttempt) * 100);
-		  var guessStringPercent = guessPercent + '%';
-		  lettGauge.style.width = guessStringPercent;
+		clearKeys: function() {
+			gauge.updateLett();
+
+		  var lettPick = document.getElementById("lett_pick");
+		  lettPick.style.display = "flex";
+		  lettPick.innerHTML = ""
 		},
 
 		instructions: function(instr) {
@@ -385,28 +420,143 @@ var lett = {
 		  lettInstr.style.display = "block";
 		  lettInstr.style.visibility = "visible";
 		}
+
 };
 
 //handles win and loss gauges
 var gauge = {
 		updateWin: function() {
 		  var winGauge = document.getElementById("win_gauge");
-		  var winPercent = (win / (mode.maxWins - overLoss)) * 100;
+		  // var winPercent = (win / (mode.maxWins - overLoss)) * 100;
+		  var winPercent = (win / (mode.iStop - overLoss)) * 100;
 		  var winStringPercent = Math.ceil(winPercent) + '%';
 		  winGauge.style.width = winStringPercent;
 		  winGauge.innerHTML = winStringPercent;
 		},
 
-		updateLoss: function() {
+		updateLoss: function() { 
+
+			//need to use min of remaining and maxLoss
 		  var lossGauge = document.getElementById("loss_gauge");
-		  var lossPercent = (loss / mode.maxLoss) * 100;
+
+		  var lossPercent = (loss / minLoss) * 100;
 		  var lossStringPercent = lossPercent + '%';
-		  var lossInnerHTML = loss.toString() + " / " + mode.maxLoss.toString();
+		  var lossInnerHTML = loss.toString() + " / " + minLoss.toString();
 		  lossGauge.style.width = lossStringPercent;
 		  lossGauge.innerHTML = lossInnerHTML;
+		},
+
+		updateLett: function() {
+		  var lettGauge = document.getElementById("lett_gauge");
+		  var guessPercent = 100 - (((userGuess.length - correctGuess.length) / mode.maxAttempt) * 100);
+		  var guessStringPercent = guessPercent + '%';
+		  lettGauge.style.width = guessStringPercent;
+		},
+
+		clearAll: function() {
+		  var winGauge = document.getElementById("win_gauge");
+		  var lossGauge = document.getElementById("loss_gauge");
+		  var lettGauge = document.getElementById("lett_gauge");
+
+		  var lettGaugePercent = '0%';	
+		  var lossGaugePercent = '0%';
+		  var winGaugePercent = '0%';
+
+		  lettGauge.innerHTML = "";
+		  lossGauge.innerHTML = "";
+		  winGauge.innerHTML = "";
+
+		  lettGauge.style.width = lettGaugePercent;
+		  lossGauge.style.width = lossGaugePercent;
+		  winGauge.style.width = winGaugePercent;
 		}
 };
 
+var arena = {
 
+		displayModeSel: function() {
+
+		},
+
+		closeCover: function() {
+			var solvArenaMode = document.getElementById("cid_arena_mode")
+		  solvArenaMode.style.visibility = "hidden";
+			
+			var solvArenaCover = document.getElementById("cid_arena_cover");
+			solvArenaCover.classList.remove('open-animate');
+			solvArenaCover.classList.add('cover-animate');
+
+			//display to arena cover
+		  var coverInfoText1 = document.getElementById("cover_info_text1");
+		  coverInfoText1.innerHTML = mode.desig;
+		  coverInfoText1.style.color = mode.color;
+
+		  this.updateCover();
+		},
+
+		openCover: function(status) {
+			iElement = ""; //make sure keyboard cannot be used
+
+			//remove schrodinger background
+			var cidArena = document.getElementById("cid_arena");
+		  cidArena.style.backgroundImage = "none";
+
+			//depending on win or loss display different text and gifs
+			var arenaResultGif = document.getElementById("arena_result_gif");
+			var resultInfoText = document.getElementById("result_info_text");
+		  var resultInfoBtn = document.getElementById("result_info_btn");
+
+			if (status === "dead") {
+		    deadSong.play();
+				arenaResultGif.src = deadResult.gif;
+				resultInfoText.innerHTML = deadResult.comment;
+		    resultInfoBtn.innerHTML = "Replay?"
+		    resultInfoBtn.value = deadResult.desig;
+			}
+			else if (status === "cont") {
+				arenaResultGif.src = contResult.gif;
+				resultInfoText.innerHTML = contResult.comment;
+		    resultInfoBtn.innerHTML = "Continue?"
+		    resultInfoBtn.value = contResult.desig;
+			}
+			else { //this is a overall win
+		    aliveSong.play();
+				arenaResultGif.src = aliveResult.gif;
+				resultInfoText.innerHTML = aliveResult.comment;
+		    resultInfoBtn.innerHTML = "Replay?"
+		    resultInfoBtn.value = aliveResult.desig;
+			}
+
+			//animate opening of cover
+			document.getElementById("cid_arena_mode").style.visibility = "hidden";
+			var cidArenaCover = document.getElementById("cid_arena_cover");
+			cidArenaCover.classList.remove('close-animate');
+			cidArenaCover.classList.add('open-animate');
+
+			//display background-content box
+			var cidArenaResult = document.getElementById("cid_arena_result");
+			cidArenaResult.style.visibility = "visible";
+		},
+
+		updateCover: function() {
+			//decrease remaining element
+		  var coverInfoText2 = document.getElementById("cover_info_text2");
+			coverInfoText2.innerHTML = elementSubSet.length;
+		},
+
+		restoreModeSel: function() {
+			//hide gif
+			var cidArenaResult = document.getElementById("cid_arena_result");
+			cidArenaResult.style.visibility = "hidden";
+
+			//replace schrodinger background
+			var cidArena = document.getElementById("cid_arena");
+			cidArena.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
+
+			//show mode selection
+			var cidArenaMode = document.getElementById("cid_arena_mode");
+			cidArenaMode.style.visibility = "visible";
+		}
+};
 
 
