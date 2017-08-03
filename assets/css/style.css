@@ -179,7 +179,7 @@ p {
 
 .cover-info-text1 {
   text-align: center;
-  padding-top: 20px;
+  padding-top: 40px;
 }
 
 .cover-info-text2 {
@@ -189,8 +189,10 @@ p {
 
 .cover-info-text3 {
   position: relative;
-  bottom: 65px;
-  font-size: 18px;
+  bottom: 75px;
+  font-size: 25px;
+  text-shadow: 2px 2px 2px #000000;
+  color: #7FFF00;
 }
 
 .cid-arena-result {
