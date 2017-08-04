@@ -120,11 +120,6 @@ var elementString = ""; //track the current elements string
 var iElement = ""; //element generated
 var stopGame = true; //halt functions when element is shown
 
-var meowSound = new Audio("assets/audio/meow2.mp3");
-var clonkSound = new Audio("assets/audio/clonk.mp3");
-var aliveSong = new Audio("assets/audio/periodic-song.mp3");
-var deadSong = new Audio("assets/audio/funeral-song.mp3");
-
 //keyboard event listener
 document.addEventListener('keyup', function(event) {
 	//initiate the game
@@ -202,7 +197,7 @@ var game = {
         		}
         		else {
           		lett.instructions("Hit Spacebar or Click on Element");
-          		meowSound.play();
+          		sound.fx("correct");
         		}
 		   	  }
 		  	}
@@ -216,7 +211,6 @@ var game = {
 		        //check if reached max losses
 		       	if (elementSubSet.length === 0) {
 		          gameOver = true;
-		          // if (loss === minLoss) {
 		          if (lossPercent === 100) {
 		          	arena.openCover("dead");
 		          }
@@ -224,14 +218,12 @@ var game = {
 		          	arena.openCover("alive");
 		       		}
 		        }
-		        // else if (loss === minLoss) {
 		        else if (lossPercent === 100) {
 		          gameOver = true;
-		          // arena.openCover(game.collapseWfn());
 		          arena.displayCards();
 		        }
 		        else {
-		          clonkSound.play();
+		          sound.fx("wrong");
 		          lett.instructions("Hit Spacebar or Click on Element");
 		        }
 		      }
@@ -240,10 +232,7 @@ var game = {
 		},
 
 		resetGameVars: function(status) {
-			aliveSong.pause();
-			aliveSong.currentTime = 0;
-			deadSong.pause();
-			deadSong.currentTime = 0;
+			sound.allOff();
 
 			userGuess = [];
 			correctGuess = [];
@@ -261,7 +250,6 @@ var game = {
 			if (status === "cont") {
 				arena.closeCover();
 				minLoss = Math.max(mode.lossPenalty, ((1/elementSubSet.length)*100)); //determine the mininimum amount of losses
-				// minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
 				gauge.updateLoss();
 				gauge.updateWin();
 
@@ -472,9 +460,7 @@ var gauge = {
 		updateLoss: function() { 
 			//need to use min of remaining and maxLoss
 		  var lossGauge = document.getElementById("loss_gauge");
-		  // var lossPercent = (loss / minLoss) * 100;
 		  var lossStringPercent = lossPercent + '%';
-		  // var lossInnerHTML = loss.toString() + " / " + minLoss.toString();
 		  var lossInnerHTML = lossStringPercent;
 		  lossGauge.style.width = lossStringPercent;
 		  lossGauge.innerHTML = lossInnerHTML;
@@ -541,7 +527,6 @@ var arena = {
 		  var resultInfoBtn = document.getElementById("result_info_btn");
 
 			if (status === "dead") {
-		    deadSong.play();
 				arenaResultGif.src = deadResult.gif;
 				resultInfoText.innerHTML = deadResult.comment;
 		    resultInfoBtn.innerHTML = "Replay?"
@@ -551,12 +536,11 @@ var arena = {
 				arenaResultGif.src = contResult.gif;
 				resultInfoText.innerHTML = contResult.comment;
 		    resultInfoBtn.innerHTML = "Continue?";
-		    // resultInfoBtn.innerHTML = "Replay?";
 		    resultInfoBtn.value = contResult.desig;
-		    // resultInfoBtn.value = deadResult.desig;
 			}
 			else { //this is a overall win
-		    aliveSong.play();
+		    sound.song("win");
+
 				arenaResultGif.src = aliveResult.gif;
 				resultInfoText.innerHTML = aliveResult.comment;
 		    resultInfoBtn.innerHTML = "Replay?"
@@ -697,6 +681,42 @@ var arena = {
 			}
 			
 			arena.openCover(result);
+		}
+};
+
+//Object containing all actions related to sound/audio
+var sound = {
+		srcWin: "assets/audio/periodic-song.mp3",
+		srcLoss: "assets/audio/periodic-song.mp3",
+		srcMeow: "assets/audio/meow.mp3",
+		srcBell: "assets/audio/bell.mp3",
+		srcClonk: "assets/audio/clonk.mp3",
+		song: function(status) {
+			var audio = document.getElementById("song_holder");
+			if (status === "win") {
+				audio.src = this.srcWin;
+			} 
+			else {
+				// audio.src = this.srcLose;
+				audio.src = this.srcWin;
+			}
+			audio.play();
+		},
+		fx: function(status) {
+			var audio = document.getElementById("fx_holder");
+			if (status === "correct") {
+				audio.src = this.srcMeow;
+			}
+			else {
+				audio.src = this.srcClonk;
+			}
+			audio.play();
+		},
+		allOff: function() {
+    	var audios = document.getElementsByTagName("audio");
+    	for(var i = 0; i < audios.length; i++){
+          audios[i].pause();
+    	}
 		}
 };
 
