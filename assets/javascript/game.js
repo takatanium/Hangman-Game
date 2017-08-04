@@ -128,7 +128,7 @@ var deadSong = new Audio("assets/audio/funeral-song.mp3");
 
 //keyboard event listener
 document.addEventListener('keyup', function(event) {
-  //initiate the game
+	//initiate the game
   if (iElement === "") {
   	if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4" || event.key === "5") {
     	game.init(gameMode[event.key-1]);
@@ -137,14 +137,11 @@ document.addEventListener('keyup', function(event) {
   //generate new element on spacebar
   else if (stopGame && !gameOver && event.keyCode === 32 ) {
     game.genElement();
-    console.log(stopGame);
   }
   //in game play
   else if (!stopGame && event.keyCode >= 65 && event.keyCode <= 90) {
   	game.update(event.keyCode);
   }
-  console.log("stopGame: "+ stopGame);
-  console.log("gameOver: "+ stopGame);
 });
 
 //main game oject
@@ -165,7 +162,6 @@ var game = {
 		},
 
 		genElement: function() {
-			console.log("Try generation");
 			if (stopGame && !gameOver) {
 				this.resetGenVars();
 
@@ -173,7 +169,6 @@ var game = {
 				elementIndex = tools.getRandom(elementSubSet.length);
 				iElement = elementSubSet[elementIndex];
 				elementString = iElement.name;
-				console.log("Successful generation");
 
 				lett.makeKeys(); //display keys
 				elem.displaySymbol(); //display symbol
@@ -257,15 +252,22 @@ var game = {
 			loss = 0;
 			lossPercent = 0;
 			gameOver = false;
+			iElement = "";
+			elementIndex = -1;
+			elem.clearAll();
+      elem.printList();
+      lett.clearKeys();
+      gauge.clearAll();
 
 			if (status === "cont") {
 				arena.closeCover();
 				minLoss = Math.max(mode.lossPenalty, ((1/elementSubSet.length)*100)); //determine the mininimum amount of losses
 				// minLoss = Math.min(mode.maxLoss, elementSubSet.length); //determine the mininimum amount of losses
 				gauge.updateLoss();
+				gauge.updateWin();
+
 				this.genElement();
 			}
-
 			else {
 				overLoss = 0;
 				win = 0;
@@ -273,14 +275,7 @@ var game = {
 				elementPastSet = [];
 				iElement = "";
 				elementIndex = -1;
-
-				if (status === "alive" || status === "dead") {
-					elem.clearAll();
-	        elem.printList();
-	        lett.clearKeys();
-	        gauge.clearAll();
-	        arena.restoreModeSel();
-				}
+	      arena.restoreModeSel();
 			}
 		},
 
@@ -529,6 +524,10 @@ var arena = {
 		  coverInfoText1.innerHTML = mode.desig;
 		  coverInfoText1.style.color = mode.color;
 
+		  //take focus off any hidden buttons
+			var resultInfoBtn = document.getElementById("result_info_btn");
+			resultInfoBtn.blur();
+
 		  this.updateCover();
 		},
 
@@ -552,10 +551,10 @@ var arena = {
 			else if (status === "cont") {
 				arenaResultGif.src = contResult.gif;
 				resultInfoText.innerHTML = contResult.comment;
-		    // resultInfoBtn.innerHTML = "Continue?";
-		    resultInfoBtn.innerHTML = "Replay?";
-		    // resultInfoBtn.value = contResult.desig;
-		    resultInfoBtn.value = deadResult.desig;
+		    resultInfoBtn.innerHTML = "Continue?";
+		    // resultInfoBtn.innerHTML = "Replay?";
+		    resultInfoBtn.value = contResult.desig;
+		    // resultInfoBtn.value = deadResult.desig;
 			}
 			else { //this is a overall win
 		    aliveSong.play();
