@@ -85,8 +85,7 @@ var aliveResult = {
 
 var deadResult = {
 		desig:"dead", 
-		// comment:"Game Over...", 
-		comment:"Playing dead?", 
+		comment:"Game Over...", 
 		gif:"https://giphy.com/embed/ZWZMwJtoqAzxS",
 };
 
