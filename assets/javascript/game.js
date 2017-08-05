@@ -10,6 +10,9 @@ document.addEventListener('keyup', function(event) {
 		stats = game.genStats();
 		arena.displayModeSel();
 		lett.instructions("");
+		var letter = document.getElementById("lett");
+		letter.onclick = "";
+
 	}
 	else {
 		//initiate the game
@@ -49,6 +52,21 @@ var game = {
 			stats.gameOver = false;
 
 			//hoist variables?
+		},
+
+		preload: function() {
+			var lettGauge = document.getElementById("lett_gauge");
+		  var guessPercent = 100;
+		  var guessStringPercent = guessPercent + '%';
+		  lettGauge.style.width = guessStringPercent;
+			var letter = document.getElementById("lett");
+		  letter.onclick = function() {
+		  	stats = game.genStats();
+				arena.displayModeSel();
+				lett.instructions("");
+				letter.onclick = "";
+		  };
+			lett.instructions('Press Any Key to Start or Click Here.');
 		},
 
 		genMode: function(modeNum) {

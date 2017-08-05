@@ -290,6 +290,11 @@ p {
   font-size: 14px
 }
 
+.lett {
+  cursor: pointer; 
+  cursor: hand;
+}
+
 .lett-gauge {
   font-weight: bold;
   font-size: 18px;

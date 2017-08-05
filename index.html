@@ -17,7 +17,7 @@
 
 </head>
 
-<body onload="lett.instructions('Press Any Key to Start');">
+<body onload="game.preload();">
 	
 	<div class="container">
 	
@@ -54,7 +54,7 @@
 			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo" onclick="clonkSound.play();" title="Loss Gauge"">
 		</div>
 
-		<div class="elem auto-margin" onclick="game.genElement();">
+		<div class="elem auto-margin" onclick="if(stats.stopGame && !stats.gameOver){game.genElement();};">
 			<div class="elem-gen internal-box">
 				<div class="elem-gen-text" id="elem_gen_text"></div>
 				<h3>Name Element</h3>
@@ -64,7 +64,7 @@
 			</div>
 		</div>
 
-		<div class="lett auto-margin">
+		<div class="lett auto-margin" id="lett">
 			<div class="lett-gauge">
 				<div class="progress">
 		      <div class="progress-bar progress-bar-warning  progress-bar-animated lett-gauge" id="lett_gauge"></div>
