@@ -91,6 +91,8 @@ p {
 .loss-gauge {
   font-size: 16px;
   font-weight: bold;
+  background: #FFCC00;
+  color: #000000;
 }
 
 .win-icon {
@@ -130,7 +132,13 @@ p {
   top: 3px;
   left: 10px;
   z-index: 6;
-  /*display: none; */
+}
+
+.arena-mode-flex {
+  width: 260px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .cid-arena-cover {
@@ -233,6 +241,12 @@ p {
   position: absolute;
   top: 0;
   visibility: hidden;
+}
+
+#arena_result_gif {
+  position: relative;
+  /*width: 400px;*/
+  height: 232px;
 }
 
 .arena-result-info {
