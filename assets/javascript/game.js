@@ -182,7 +182,7 @@ var game = {
 					btn: "Replay?",
 					gif:"https://giphy.com/embed/ZWZMwJtoqAzxS",
 					song: function() {
-			    	sound.song("win");
+			    	sound.song("lose");
 			    }
 			};
 			gameResult.push(deadResult);
@@ -193,7 +193,7 @@ var game = {
 					btn: "Coninue?", 
 					gif:"https://giphy.com/embed/fliBUx4ZFB6HS",
 					song: function() {
-			    	sound.song("win");
+			    	// sound.song("win");
 			    }
 			};
 			gameResult.push(contResult);
@@ -262,6 +262,7 @@ var game = {
 		       	if (sets.elementSubSet.length === 0) {
 		          stats.gameOver = true;
 		          if (stats.lossPercent === 100) {
+		          	sound.fx("wrong");
 		          	arena.openCover(1);
 		          }
 		          else {
@@ -269,6 +270,7 @@ var game = {
 		       		}
 		        }
 		        else if (stats.lossPercent === 100) {
+		        	sound.fx("wrong");
 		          stats.gameOver = true;
 		          arena.displayCards();
 		        }
@@ -791,7 +793,7 @@ var arena = {
 //Object containing all actions related to sound/audio
 var sound = {
 		srcWin: "assets/audio/periodic-song.mp3",
-		srcLoss: "assets/audio/periodic-song.mp3",
+		srcLoss: "assets/audio/funeral-song.mp3",
 		srcMeow: "assets/audio/meow.mp3",
 		srcBell: "assets/audio/bell.mp3",
 		srcClonk: "assets/audio/clonk.mp3",
@@ -801,8 +803,7 @@ var sound = {
 				audio.src = this.srcWin;
 			} 
 			else {
-				// audio.src = this.srcLose;
-				audio.src = this.srcWin;
+				audio.src = this.srcLoss;
 			}
 			audio.play();
 		},
