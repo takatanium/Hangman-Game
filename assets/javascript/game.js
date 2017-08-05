@@ -12,7 +12,6 @@ document.addEventListener('keyup', function(event) {
 		lett.instructions("");
 		var letter = document.getElementById("lett");
 		letter.onclick = "";
-
 	}
 	else {
 		//initiate the game
@@ -50,8 +49,6 @@ var game = {
  			arena.closeCover(); //close the cover 			
 			this.genElement(); //generate first element
 			stats.gameOver = false;
-
-			//hoist variables?
 		},
 
 		preload: function() {
@@ -416,9 +413,7 @@ var elem = {
 		},
 
 		printList: function() {
-			var solvListItems = handleDOM.clearEl("cid_list_items");
-			// var solvListItems = document.getElementById("cid_list_items");
-			// solvListItems.innerHTML = "";
+			var cidListItems = handleDOM.clearEl("cid_list_items");
 
 			var symOrNum;
 
@@ -430,14 +425,14 @@ var elem = {
 					symOrNum = sets.elementPastSet[i][0].number;
 				}
 				if (sets.elementPastSet[i][1] === false) { //guessed incorrectly
-					solvListItems.innerHTML += "<a href=" 
+					cidListItems.innerHTML += "<a href=" 
 				                         + sets.elementPastSet[i][0].wiki 
 				                         + " target='_blank' class='list-group-item list-group-item-danger'>"
 				                         + symOrNum + ":" 
 				                         + tools.capFirst(sets.elementPastSet[i][0].name) + "</a>";
 				}
 				else {
-					solvListItems.innerHTML += "<a href=" 
+					cidListItems.innerHTML += "<a href=" 
 				                         + sets.elementPastSet[i][0].wiki 
 				                         + " target='_blank' class='list-group-item'>"
 				                         + symOrNum + ":" 
@@ -549,7 +544,6 @@ var arena = {
 			this.parentEl.innerHTML = "";
 			this.parentEl.style.backgroundImage = "url('assets/images/schrodingers-cat.png')";
 
-			// var cidArena = handleDOM.clearEl("cid_arena");
 			var cidArenaMode = handleDOM.createEl("div", ["cid-arena-mode"], "cid_arena_mode");
 
 			var p = handleDOM.createEl("p", [], "", "Choose Difficulty");
@@ -578,7 +572,6 @@ var arena = {
 		displayCover: function() {
 			var cidArena = handleDOM.clearEl("cid_arena");
 			var cidArenaCover = handleDOM.createEl("div", ["cid-arena-cover"], "cid_arena_cover");
-			// cidArenaCover.style.visibility = "visible";
 
 			var arenaCoverImg = handleDOM.createEl("img", ["arena-cover-img"], "arena_cover_img", "",
 																						 [["alt","Metal Cover"]]);
@@ -640,10 +633,6 @@ var arena = {
 		  coverInfoText1.innerHTML += mode.desig;
 		  coverInfoText1.style.color = mode.color;
 
-		  //take focus off any hidden buttons
-			// var resultInfoBtn = document.getElementById("result_info_btn");
-			// resultInfoBtn.blur();
-
 		  this.updateCover();
 		},
 
@@ -703,8 +692,6 @@ var arena = {
 			if (wfnArray[2]===1) {rightImg = imgHTML;}
 			if (wfnArray[3]===1) {botImg = imgHTML;}
 			
-
-			// coverCardBox.style.visibility = "visible";
 			arenaCoverInfo.style.visibility = "hidden";
 			lett.instructions("Find the cat! Pick a card.");
 

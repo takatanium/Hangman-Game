@@ -44,14 +44,14 @@
 			<div class="progress">
 	      <div class="progress-bar progress-bar-success progress-bar-striped progress-bar-animated win-gauge" id="win_gauge"></div>
 	    </div>
-			<img src="assets/images/cat-icon2.png" class="win-icon" alt="Cat Logo" onclick="meowSound.play();" title="Win Gauge">
+			<img src="assets/images/cat-icon2.png" class="win-icon" alt="Cat Logo" onclick="sound.fx('correct');" title="Win Gauge">
 		</div>
 
 		<div class="loss auto-margin">
 			<div class="progress">
 	      <div class="progress-bar progress-bar-warning progress-bar-striped progress-bar-animated loss-gauge" id="loss_gauge"></div>
 	    </div>
-			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo" onclick="clonkSound.play();" title="Loss Gauge"">
+			<img src="assets/images/radioactive.png" class="loss-icon" alt="Radioactive Logo" onclick="sound.fx('wrong');" title="Loss Gauge"">
 		</div>
 
 		<div class="elem auto-margin" onclick="if(stats.stopGame && !stats.gameOver){game.genElement();};">
